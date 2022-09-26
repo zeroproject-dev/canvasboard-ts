@@ -1,4 +1,6 @@
 html {
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	box-sizing: border-box;
 }
 
@@ -13,9 +15,48 @@ body {
 	min-height: 100vh;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
 }
 
 #canvas {
 	width: 100vw;
 	height: 100vh;
+}
+
+.configbar {
+	background-color: #e2e2e2;
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	top: 50%;
+	left: 0;
+	transform: translate(0, -50%);
+	width: 150px;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	border-radius: 0 5px 5px 0px;
+	padding: 10px;
+	gap: 5px;
+}
+
+.configbar > * {
+	width: 100%;
+	min-height: 30px;
+}
+
+.button {
+	background-color: #fff;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	border-radius: 5px;
+	padding: 5px;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	display: block;
+	font-size: 1rem;
+	font-weight: normal;
+}
+
+.button:hover {
+	background-color: #eee;
 }
