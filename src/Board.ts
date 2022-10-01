@@ -2,6 +2,7 @@ import CanvasConfig from './Config/CanvasConfig';
 import Config from './Config/Config';
 import HandDrawing from './HandDrawing';
 import Drawable from './types/Drawable';
+import Point from './types/Point';
 
 export default class Board {
 	public static canvas: HTMLCanvasElement;
@@ -44,12 +45,8 @@ export default class Board {
 	}
 
 	reDraw() {
-		Board.ctx.clearRect(
-			0,
-			0,
-			Board.canvas.clientWidth,
-			Board.canvas.clientHeight
-		);
+		this.clearCanvas();
+
 		this.history.forEach((draw) => {
 			Board.ctx.beginPath();
 			Board.ctx.strokeStyle = draw.strokeColor;
@@ -135,12 +132,7 @@ export default class Board {
 	undo() {
 		if (this.history.length === 0) return;
 
-		Board.ctx.clearRect(
-			0,
-			0,
-			Board.canvas.clientWidth,
-			Board.canvas.clientHeight
-		);
+		this.clearCanvas();
 		this.history.pop();
 		this.reDraw();
 	}
@@ -154,17 +146,22 @@ export default class Board {
 	}
 
 	clearBoard() {
-		Board.ctx.clearRect(
-			0,
-			0,
-			document.body.clientWidth,
-			document.body.clientHeight
-		);
-
+		this.clearCanvas();
 		this.currentDraw = new HandDrawing(
 			this.config.color,
 			this.config.brushSize
 		);
 		this.history = [];
+	}
+
+	clearCanvas(point: Point | null = null) {
+		if (point === null)
+			Board.ctx.clearRect(
+				0,
+				0,
+				document.body.clientWidth,
+				document.body.clientHeight
+			);
+		else Board.ctx.clearRect(point.prevX, point.prevY, point.x, point.y);
 	}
 }
