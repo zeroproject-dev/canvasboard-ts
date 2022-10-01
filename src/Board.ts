@@ -1,10 +1,11 @@
+import BoardEvents from './BoardEvents';
 import CanvasConfig from './Config/CanvasConfig';
 import Config from './Config/Config';
 import HandDrawing from './HandDrawing';
 import Drawable from './types/Drawable';
 import Point from './types/Point';
 
-export default class Board {
+export default class Board extends BoardEvents {
 	public static canvas: HTMLCanvasElement;
 	public static ctx: CanvasRenderingContext2D;
 
@@ -18,6 +19,8 @@ export default class Board {
 	private canvasConfig: CanvasConfig;
 
 	constructor() {
+		super();
+
 		Board.canvas = document.getElementById('canvas') as HTMLCanvasElement;
 		Board.ctx = Board.canvas.getContext('2d') as CanvasRenderingContext2D;
 		Board.canvas.width = document.body.clientWidth;
@@ -39,9 +42,25 @@ export default class Board {
 		);
 	}
 
+	initilizeEvents() {
+		this.onResizeEvent(this.onResize.bind(this));
+		this.onMouseDownEvent(this.onMouseDown.bind(this));
+		this.onMouseMoveEvent(this.onMouseMove.bind(this));
+		this.onMouseUpEvent(this.onMouseUp.bind(this));
+		this.onMouseLeaveEvent(this.onMouseUp.bind(this));
+		this.onContextMenuEvent(this.onContextMenu.bind(this));
+		this.onWheelEvent(this.onMouseWheel.bind(this));
+		this.onKeydownEvent(this.onKeyDown.bind(this));
+	}
+
+	onContextMenu(evt: MouseEvent) {
+		evt.preventDefault();
+	}
+
 	onResize() {
 		Board.canvas.width = document.body.clientWidth;
 		Board.canvas.height = document.body.clientHeight;
+		this.reDraw();
 	}
 
 	reDraw() {
@@ -58,7 +77,7 @@ export default class Board {
 		});
 	}
 
-	startDraw(evt: MouseEvent) {
+	onMouseDown(evt: MouseEvent) {
 		evt.preventDefault();
 		this.isDrawing = evt.button == 0;
 		this.isDragging = evt.button == 1;
@@ -76,7 +95,7 @@ export default class Board {
 		this.currentDraw.startDraw();
 	}
 
-	drawLine(event: MouseEvent) {
+	onMouseMove(event: MouseEvent) {
 		this.canvasConfig.cursorX = event.pageX;
 		this.canvasConfig.cursorY = event.pageY;
 
@@ -100,7 +119,7 @@ export default class Board {
 		this.canvasConfig.prevCursorY = this.canvasConfig.cursorY;
 	}
 
-	stopDraw() {
+	onMouseUp() {
 		Board.ctx.closePath();
 		this.history.push(this.currentDraw);
 		this.currentDraw.endDraw();
@@ -109,13 +128,23 @@ export default class Board {
 		this.isDragging = false;
 	}
 
-	onMouseWheel(event: WheelEvent) {
-		const deltaY = event.deltaY;
+	onMouseWheel(evt: WheelEvent) {
+		if (this.isDrawing) {
+			this.currentDraw.cancelDraw();
+			this.currentDraw = new HandDrawing(
+				this.config.color,
+				this.config.brushSize
+			);
+			this.isDrawing = false;
+			this.isDragging = false;
+		}
+
+		const deltaY = evt.deltaY;
 		const scaleAmount = -deltaY / 500;
 		this.canvasConfig.scale = this.canvasConfig.scale * (1 + scaleAmount);
 
-		var distX = event.pageX / Board.canvas.clientWidth;
-		var distY = event.pageY / Board.canvas.clientHeight;
+		var distX = evt.pageX / Board.canvas.clientWidth;
+		var distY = evt.pageY / Board.canvas.clientHeight;
 
 		const unitsZoomedX = this.canvasConfig.getWidth() * scaleAmount;
 		const unitsZoomedY = this.canvasConfig.getHeight() * scaleAmount;
@@ -127,6 +156,12 @@ export default class Board {
 		this.canvasConfig.offsetY -= unitsAddTop;
 
 		this.reDraw();
+	}
+
+	onKeyDown(evt: KeyboardEvent) {
+		if (evt.ctrlKey && (evt.key === '\u001a' || evt.key === 'z')) {
+			this.undo();
+		}
 	}
 
 	undo() {

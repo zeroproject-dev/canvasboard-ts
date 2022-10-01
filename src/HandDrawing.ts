@@ -16,6 +16,10 @@ export default class HandDrawing implements Drawable {
 		this.fillColor = 'transparent';
 	}
 
+	cancelDraw(): void {
+		this.line = [];
+	}
+
 	startDraw(): void {
 		Board.ctx.beginPath();
 		Board.ctx.strokeStyle = this.strokeColor;

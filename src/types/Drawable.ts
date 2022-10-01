@@ -8,5 +8,6 @@ export default interface Drawable {
 	startDraw(): void;
 	draw(canvasConfig: CanvasConfig, event: MouseEvent): void;
 	reDraw(canvasConfig: CanvasConfig): void;
+	cancelDraw(): void;
 	endDraw(): void;
 }
