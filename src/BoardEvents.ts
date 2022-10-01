@@ -33,6 +33,16 @@ export default abstract class BoardEvents {
 		Board.canvas.addEventListener('wheel', callback);
 	}
 
+	onTouchStartEvent(callback: (evt: TouchEvent) => void) {
+		Board.canvas.addEventListener('touchstart', callback);
+	}
+	onTouchMoveEvent(callback: (evt: TouchEvent) => void) {
+		Board.canvas.addEventListener('touchmove', callback);
+	}
+	onTouchEndEvent(callback: (evt: TouchEvent) => void) {
+		Board.canvas.addEventListener('touchend', callback);
+	}
+
 	onContextMenuEvent(callback: (evt: MouseEvent) => void) {
 		Board.canvas.addEventListener('contextmenu', callback);
 	}

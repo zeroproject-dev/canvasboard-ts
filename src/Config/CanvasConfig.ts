@@ -9,6 +9,8 @@ export default class CanvasConfig {
 	prevCursorY: number;
 	scale: number;
 
+	prevTouches: Touch[] | null[] = [null, null];
+
 	private static _instance: CanvasConfig;
 
 	constructor() {
