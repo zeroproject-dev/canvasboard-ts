@@ -4,6 +4,10 @@ export default class Config {
 	downloadButton: HTMLButtonElement;
 	clearButton: HTMLButtonElement;
 
+	// public static ctx: CanvasRenderingContext2D;
+	// public static canvas: HTMLCanvasElement;
+	private static _instance: Config | null = null;
+
 	constructor() {
 		this.colorInput = document.getElementById('color') as HTMLInputElement;
 		this.sizeInput = document.getElementById('size') as HTMLInputElement;
@@ -19,6 +23,14 @@ export default class Config {
 		this.onBrushSizeChange((brushSize: number) => {
 			this.brushSize = brushSize;
 		});
+	}
+
+	static get getInstance() {
+		if (this._instance === null) {
+			this._instance = new Config();
+		}
+
+		return this._instance;
 	}
 
 	get color() {
