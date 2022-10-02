@@ -30,7 +30,8 @@ export class Rectangle implements Drawable {
 	startDraw(evt: MouseEvent | TouchEvent): void {
 		Board.ctx.beginPath();
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth = this.properties.lineWidth as number;
+		Board.ctx.lineWidth =
+			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
 
 		this.scale = Board.canvasConfig.scale;
 
@@ -53,7 +54,8 @@ export class Rectangle implements Drawable {
 		Board.ctx.beginPath();
 
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth = this.properties.lineWidth as number;
+		Board.ctx.lineWidth =
+			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
 
 		if (evt instanceof MouseEvent) {
 			this.displayWidth = evt.pageX - this.initialX;
@@ -78,6 +80,9 @@ export class Rectangle implements Drawable {
 	}
 
 	reDraw(): void {
+		Board.ctx.strokeStyle = this.properties.strokeColor as string;
+		Board.ctx.lineWidth =
+			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
 		Board.ctx.rect(
 			Board.canvasConfig.toScreenX(this.initialRealX),
 			Board.canvasConfig.toScreenY(this.initialRealY),

@@ -12,7 +12,7 @@ export default class Board extends BoardEvents {
 	isDrawing: boolean;
 	isDragging: boolean;
 	static history: Drawable[] = [];
-	currentDraw: Drawable;
+	currentDraw: Drawable | null = null;
 
 	config: Config;
 
@@ -36,10 +36,7 @@ export default class Board extends BoardEvents {
 
 		Board.canvasConfig = canvasConfig.getInstance;
 
-		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
-			strokeColor: this.config.color,
-			lineWidth: this.config.brushSize,
-		});
+		this.createDrawable();
 	}
 
 	initilizeEvents() {
@@ -93,12 +90,9 @@ export default class Board extends BoardEvents {
 		Board.canvasConfig.prevCursorX = evt.pageX;
 		Board.canvasConfig.prevCursorY = evt.pageY;
 
-		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
-			strokeColor: this.config.color,
-			lineWidth: this.config.brushSize,
-		});
+		this.createDrawable();
 
-		this.currentDraw.startDraw(evt);
+		this.currentDraw?.startDraw(evt);
 	}
 
 	onMouseMove(evt: MouseEvent) {
@@ -106,7 +100,7 @@ export default class Board extends BoardEvents {
 		Board.canvasConfig.cursorY = evt.pageY;
 
 		if (this.isDrawing) {
-			this.currentDraw.draw(evt);
+			this.currentDraw?.draw(evt);
 		}
 
 		if (this.isDragging) {
@@ -129,8 +123,8 @@ export default class Board extends BoardEvents {
 	onMouseUp(evt: MouseEvent | null) {
 		// Board.ctx.closePath();
 		if (this.isDrawing) {
-			this.currentDraw.endDraw(evt);
-			Board.history.push(this.currentDraw);
+			this.currentDraw?.endDraw(evt);
+			Board.history.push(this.currentDraw as Drawable);
 		}
 
 		this.isDrawing = false;
@@ -139,11 +133,8 @@ export default class Board extends BoardEvents {
 
 	onMouseWheel(evt: WheelEvent) {
 		if (this.isDrawing) {
-			this.currentDraw.cancelDraw();
-			this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
-				strokeColor: this.config.color,
-				lineWidth: this.config.brushSize,
-			});
+			this.currentDraw?.cancelDraw();
+			this.createDrawable();
 
 			this.isDrawing = false;
 			this.isDragging = false;
@@ -176,12 +167,9 @@ export default class Board extends BoardEvents {
 		Board.canvasConfig.prevTouches[0] = evt.touches[0];
 		Board.canvasConfig.prevTouches[1] = evt.touches[1];
 
-		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
-			strokeColor: this.config.color,
-			lineWidth: this.config.brushSize,
-		});
+		this.createDrawable();
 
-		this.currentDraw.startDraw(evt);
+		this.currentDraw?.startDraw(evt);
 	}
 
 	onTouchMove(evt: TouchEvent) {
@@ -196,7 +184,7 @@ export default class Board extends BoardEvents {
 		const prevTouch0Y = Board.canvasConfig.prevTouches[0].pageY;
 
 		if (this.isDrawing) {
-			this.currentDraw.draw(evt);
+			this.currentDraw?.draw(evt);
 		}
 
 		if (this.isDragging) {
@@ -278,11 +266,15 @@ export default class Board extends BoardEvents {
 
 	clearBoard() {
 		Board.clearCanvas();
+		this.createDrawable();
+		Board.history = [];
+	}
+
+	createDrawable() {
 		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
 			strokeColor: this.config.color,
 			lineWidth: this.config.brushSize,
 		});
-		Board.history = [];
 	}
 
 	static clearCanvas(point: Point | null = null) {

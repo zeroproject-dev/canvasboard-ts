@@ -20,7 +20,8 @@ export default class HandDrawing implements Drawable {
 	startDraw(): void {
 		Board.ctx.beginPath();
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth = this.properties.lineWidth as number;
+		Board.ctx.lineWidth =
+			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
 		Board.ctx.lineCap = 'round';
 	}
 
@@ -71,7 +72,8 @@ export default class HandDrawing implements Drawable {
 	reDraw(): void {
 		Board.ctx.beginPath();
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth = this.properties.lineWidth as number;
+		Board.ctx.lineWidth =
+			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
 
 		this.line.forEach((point) => {
 			Board.ctx.moveTo(
