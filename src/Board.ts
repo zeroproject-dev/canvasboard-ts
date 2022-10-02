@@ -104,8 +104,6 @@ export default class Board extends BoardEvents {
 		}
 
 		if (this.isDragging) {
-			console.log('dragging');
-			console.log(Board.history);
 			Board.canvasConfig.offsetX +=
 				(Board.canvasConfig.cursorX - Board.canvasConfig.prevCursorX) /
 				Board.canvasConfig.scale;
@@ -121,7 +119,6 @@ export default class Board extends BoardEvents {
 	}
 
 	onMouseUp(evt: MouseEvent | null) {
-		// Board.ctx.closePath();
 		if (this.isDrawing) {
 			this.currentDraw?.endDraw(evt);
 			Board.history.push(this.currentDraw as Drawable);
@@ -143,7 +140,11 @@ export default class Board extends BoardEvents {
 
 		const deltaY = evt.deltaY;
 		const scaleAmount = -deltaY / 500;
-		Board.canvasConfig.scale = Board.canvasConfig.scale * (1 + scaleAmount);
+		const newScale = Board.canvasConfig.scale * (1 + scaleAmount);
+
+		if (newScale < 0.1 || newScale > 10) return;
+
+		Board.canvasConfig.scale = newScale;
 
 		var distX = evt.pageX / Board.canvas.clientWidth;
 		var distY = evt.pageY / Board.canvas.clientHeight;
