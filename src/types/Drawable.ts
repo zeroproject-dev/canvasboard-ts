@@ -1,12 +1,11 @@
-import CanvasConfig from '../Config/CanvasConfig';
 import { DrawableProperties } from './DrawableProperties';
 
 export default interface Drawable {
 	properties: DrawableProperties;
 
-	startDraw(): void;
-	draw(canvasConfig: CanvasConfig, event: MouseEvent | TouchEvent): void;
-	reDraw(canvasConfig: CanvasConfig): void;
+	startDraw(event: MouseEvent | TouchEvent): void;
+	draw(event: MouseEvent | TouchEvent): void;
+	reDraw(): void;
 	cancelDraw(): void;
-	endDraw(): void;
+	endDraw(event: MouseEvent | TouchEvent | null): void;
 }

@@ -1,16 +1,26 @@
+import { DrawableType } from '../Drawables/DrawableFactory';
+
 export default class Config {
 	colorInput: HTMLInputElement;
 	sizeInput: HTMLInputElement;
 	downloadButton: HTMLButtonElement;
 	clearButton: HTMLButtonElement;
 
-	// public static ctx: CanvasRenderingContext2D;
-	// public static canvas: HTMLCanvasElement;
+	public static currentDrawing: DrawableType;
+
+	drawables: { [key: string]: DrawableType } = {
+		pen: DrawableType.HandDrawing,
+		rectangle: DrawableType.Rectangle,
+	};
+
 	private static _instance: Config | null = null;
 
 	constructor() {
 		this.colorInput = document.getElementById('color') as HTMLInputElement;
 		this.sizeInput = document.getElementById('size') as HTMLInputElement;
+
+		Config.currentDrawing = DrawableType.HandDrawing;
+
 		this.downloadButton = document.getElementById(
 			'download'
 		) as HTMLButtonElement;
@@ -23,6 +33,8 @@ export default class Config {
 		this.onBrushSizeChange((brushSize: number) => {
 			this.brushSize = brushSize;
 		});
+
+		this.onDrawableClick();
 	}
 
 	static get getInstance() {
@@ -56,8 +68,14 @@ export default class Config {
 	}
 
 	onBrushSizeChange(callback: (brushSize: number) => void) {
-		this.sizeInput.addEventListener('change', () => {
-			callback(this.brushSize);
+		this.sizeInput.addEventListener('change', (evt: Event) => {
+			const target: HTMLInputElement = evt.target as HTMLInputElement;
+			const sibiling: HTMLSpanElement =
+				target.nextElementSibling as HTMLSpanElement;
+
+			sibiling.textContent = target.value;
+
+			callback(Number(this.sizeInput.value));
 		});
 	}
 
@@ -70,6 +88,16 @@ export default class Config {
 	onClearClick(callback: () => void) {
 		this.clearButton.addEventListener('click', () => {
 			callback();
+		});
+	}
+
+	onDrawableClick() {
+		const drawables = document.getElementById('drawables') as HTMLDivElement;
+		drawables.addEventListener('click', (evt: MouseEvent) => {
+			const target = evt.target as HTMLButtonElement;
+			const drawable = target.dataset.type;
+			if (drawable === undefined) return;
+			Config.currentDrawing = this.drawables[drawable];
 		});
 	}
 }

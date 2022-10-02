@@ -1,9 +1,9 @@
 import BoardEvents from './BoardEvents';
-import CanvasConfig from './Config/CanvasConfig';
 import Config from './Config/Config';
-import { DrawableFactory, DrawableType } from './Drawables/DrawableFactory';
+import { DrawableFactory } from './Drawables/DrawableFactory';
 import Drawable from './types/Drawable';
 import Point from './types/Point';
+import canvasConfig from './Config/CanvasConfig';
 
 export default class Board extends BoardEvents {
 	public static canvas: HTMLCanvasElement;
@@ -11,12 +11,12 @@ export default class Board extends BoardEvents {
 
 	isDrawing: boolean;
 	isDragging: boolean;
-	history: Drawable[] = [];
+	static history: Drawable[] = [];
 	currentDraw: Drawable;
 
 	config: Config;
 
-	private canvasConfig: CanvasConfig;
+	static canvasConfig: canvasConfig;
 
 	constructor() {
 		super();
@@ -34,9 +34,9 @@ export default class Board extends BoardEvents {
 		this.config.onDownloadClick(this.saveImage.bind(this));
 		this.config.onClearClick(this.clearBoard.bind(this));
 
-		this.canvasConfig = CanvasConfig.getInstance;
+		Board.canvasConfig = canvasConfig.getInstance;
 
-		this.currentDraw = DrawableFactory.create(DrawableType.HandDrawing, {
+		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
 			strokeColor: this.config.color,
 			lineWidth: this.config.brushSize,
 		});
@@ -66,21 +66,21 @@ export default class Board extends BoardEvents {
 	onResize() {
 		Board.canvas.width = document.body.clientWidth;
 		Board.canvas.height = document.body.clientHeight;
-		this.reDraw();
+		Board.reDraw();
 	}
 
-	reDraw() {
-		this.clearCanvas();
+	static reDraw() {
+		if (Board.history.length == 0) return;
+		Board.clearCanvas();
 
-		this.history.forEach((draw) => {
+		Board.history.forEach((draw) => {
 			Board.ctx.beginPath();
 			Board.ctx.strokeStyle = draw.properties.strokeColor as string;
 			Board.ctx.lineWidth = draw.properties.lineWidth as number;
 
-			draw.reDraw(this.canvasConfig);
-
-			Board.ctx.closePath();
+			draw.reDraw();
 		});
+		Board.ctx.closePath();
 	}
 
 	onMouseDown(evt: MouseEvent) {
@@ -88,46 +88,50 @@ export default class Board extends BoardEvents {
 		this.isDrawing = evt.button == 0;
 		this.isDragging = evt.button == 1;
 
-		this.canvasConfig.cursorX = evt.pageX;
-		this.canvasConfig.cursorY = evt.pageY;
-		this.canvasConfig.prevCursorX = evt.pageX;
-		this.canvasConfig.prevCursorY = evt.pageY;
+		Board.canvasConfig.cursorX = evt.pageX;
+		Board.canvasConfig.cursorY = evt.pageY;
+		Board.canvasConfig.prevCursorX = evt.pageX;
+		Board.canvasConfig.prevCursorY = evt.pageY;
 
-		this.currentDraw = DrawableFactory.create(DrawableType.HandDrawing, {
+		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
 			strokeColor: this.config.color,
 			lineWidth: this.config.brushSize,
 		});
 
-		this.currentDraw.startDraw();
+		this.currentDraw.startDraw(evt);
 	}
 
 	onMouseMove(evt: MouseEvent) {
-		this.canvasConfig.cursorX = evt.pageX;
-		this.canvasConfig.cursorY = evt.pageY;
+		Board.canvasConfig.cursorX = evt.pageX;
+		Board.canvasConfig.cursorY = evt.pageY;
 
 		if (this.isDrawing) {
-			this.currentDraw.draw(this.canvasConfig, evt);
+			this.currentDraw.draw(evt);
 		}
 
 		if (this.isDragging) {
-			this.canvasConfig.offsetX +=
-				(this.canvasConfig.cursorX - this.canvasConfig.prevCursorX) /
-				this.canvasConfig.scale;
-			this.canvasConfig.offsetY +=
-				(this.canvasConfig.cursorY - this.canvasConfig.prevCursorY) /
-				this.canvasConfig.scale;
+			console.log('dragging');
+			console.log(Board.history);
+			Board.canvasConfig.offsetX +=
+				(Board.canvasConfig.cursorX - Board.canvasConfig.prevCursorX) /
+				Board.canvasConfig.scale;
+			Board.canvasConfig.offsetY +=
+				(Board.canvasConfig.cursorY - Board.canvasConfig.prevCursorY) /
+				Board.canvasConfig.scale;
 
-			this.reDraw();
+			Board.reDraw();
 		}
 
-		this.canvasConfig.prevCursorX = this.canvasConfig.cursorX;
-		this.canvasConfig.prevCursorY = this.canvasConfig.cursorY;
+		Board.canvasConfig.prevCursorX = Board.canvasConfig.cursorX;
+		Board.canvasConfig.prevCursorY = Board.canvasConfig.cursorY;
 	}
 
-	onMouseUp() {
-		Board.ctx.closePath();
-		this.history.push(this.currentDraw);
-		this.currentDraw.endDraw();
+	onMouseUp(evt: MouseEvent | null) {
+		// Board.ctx.closePath();
+		if (this.isDrawing) {
+			this.currentDraw.endDraw(evt);
+			Board.history.push(this.currentDraw);
+		}
 
 		this.isDrawing = false;
 		this.isDragging = false;
@@ -136,70 +140,71 @@ export default class Board extends BoardEvents {
 	onMouseWheel(evt: WheelEvent) {
 		if (this.isDrawing) {
 			this.currentDraw.cancelDraw();
-			this.currentDraw = DrawableFactory.create(DrawableType.HandDrawing, {
+			this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
 				strokeColor: this.config.color,
 				lineWidth: this.config.brushSize,
 			});
 
 			this.isDrawing = false;
 			this.isDragging = false;
+			return;
 		}
 
 		const deltaY = evt.deltaY;
 		const scaleAmount = -deltaY / 500;
-		this.canvasConfig.scale = this.canvasConfig.scale * (1 + scaleAmount);
+		Board.canvasConfig.scale = Board.canvasConfig.scale * (1 + scaleAmount);
 
 		var distX = evt.pageX / Board.canvas.clientWidth;
 		var distY = evt.pageY / Board.canvas.clientHeight;
 
-		const unitsZoomedX = this.canvasConfig.getWidth() * scaleAmount;
-		const unitsZoomedY = this.canvasConfig.getHeight() * scaleAmount;
+		const unitsZoomedX = Board.canvasConfig.getWidth() * scaleAmount;
+		const unitsZoomedY = Board.canvasConfig.getHeight() * scaleAmount;
 
 		const unitsAddLeft = unitsZoomedX * distX;
 		const unitsAddTop = unitsZoomedY * distY;
 
-		this.canvasConfig.offsetX -= unitsAddLeft;
-		this.canvasConfig.offsetY -= unitsAddTop;
+		Board.canvasConfig.offsetX -= unitsAddLeft;
+		Board.canvasConfig.offsetY -= unitsAddTop;
 
-		this.reDraw();
+		Board.reDraw();
 	}
 
 	onTouchStart(evt: TouchEvent) {
 		this.isDrawing = evt.touches.length == 1;
 		this.isDragging = evt.touches.length >= 2;
 
-		this.canvasConfig.prevTouches[0] = evt.touches[0];
-		this.canvasConfig.prevTouches[1] = evt.touches[1];
+		Board.canvasConfig.prevTouches[0] = evt.touches[0];
+		Board.canvasConfig.prevTouches[1] = evt.touches[1];
 
-		this.currentDraw = DrawableFactory.create(DrawableType.HandDrawing, {
+		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
 			strokeColor: this.config.color,
 			lineWidth: this.config.brushSize,
 		});
 
-		this.currentDraw.startDraw();
+		this.currentDraw.startDraw(evt);
 	}
 
 	onTouchMove(evt: TouchEvent) {
 		if (
-			this.canvasConfig.prevTouches[0] === null ||
-			this.canvasConfig.prevTouches[1] === null
+			Board.canvasConfig.prevTouches[0] === null ||
+			Board.canvasConfig.prevTouches[1] === null
 		)
 			return;
 		const touch0X = evt.touches[0].pageX;
 		const touch0Y = evt.touches[0].pageY;
-		const prevTouch0X = this.canvasConfig.prevTouches[0].pageX;
-		const prevTouch0Y = this.canvasConfig.prevTouches[0].pageY;
+		const prevTouch0X = Board.canvasConfig.prevTouches[0].pageX;
+		const prevTouch0Y = Board.canvasConfig.prevTouches[0].pageY;
 
 		if (this.isDrawing) {
-			this.currentDraw.draw(this.canvasConfig, evt);
+			this.currentDraw.draw(evt);
 		}
 
 		if (this.isDragging) {
 			evt.preventDefault();
 			const touch1X = evt.touches[1].pageX;
 			const touch1Y = evt.touches[1].pageY;
-			const prevTouch1X = this.canvasConfig.prevTouches[1]?.pageX;
-			const prevTouch1Y = this.canvasConfig.prevTouches[1]?.pageY;
+			const prevTouch1X = Board.canvasConfig.prevTouches[1]?.pageX;
+			const prevTouch1Y = Board.canvasConfig.prevTouches[1]?.pageY;
 
 			const midX = (touch0X + touch1X) / 2;
 			const midY = (touch0Y + touch1Y) / 2;
@@ -215,38 +220,38 @@ export default class Board extends BoardEvents {
 			);
 
 			var zoomAmount = hypot / prevHypot;
-			this.canvasConfig.scale = this.canvasConfig.scale * zoomAmount;
+			Board.canvasConfig.scale = Board.canvasConfig.scale * zoomAmount;
 			const scaleAmount = 1 - zoomAmount;
 
 			const panX = midX - prevMidX;
 			const panY = midY - prevMidY;
 
-			this.canvasConfig.offsetX += panX / this.canvasConfig.scale;
-			this.canvasConfig.offsetY += panY / this.canvasConfig.scale;
+			Board.canvasConfig.offsetX += panX / Board.canvasConfig.scale;
+			Board.canvasConfig.offsetY += panY / Board.canvasConfig.scale;
 
 			var zoomRatioX = midX / Board.canvas.clientWidth;
 			var zoomRatioY = midY / Board.canvas.clientHeight;
 
-			const unitsZoomedX = this.canvasConfig.getWidth() * scaleAmount;
-			const unitsZoomedY = this.canvasConfig.getHeight() * scaleAmount;
+			const unitsZoomedX = Board.canvasConfig.getWidth() * scaleAmount;
+			const unitsZoomedY = Board.canvasConfig.getHeight() * scaleAmount;
 
 			const unitsAddLeft = unitsZoomedX * zoomRatioX;
 			const unitsAddTop = unitsZoomedY * zoomRatioY;
 
-			this.canvasConfig.offsetX += unitsAddLeft;
-			this.canvasConfig.offsetY += unitsAddTop;
+			Board.canvasConfig.offsetX += unitsAddLeft;
+			Board.canvasConfig.offsetY += unitsAddTop;
 
-			this.reDraw();
+			Board.reDraw();
 		}
 
-		this.canvasConfig.prevTouches[0] = evt.touches[0];
-		this.canvasConfig.prevTouches[1] = evt.touches[1];
+		Board.canvasConfig.prevTouches[0] = evt.touches[0];
+		Board.canvasConfig.prevTouches[1] = evt.touches[1];
 	}
 
 	onTouchEnd() {
-		this.canvasConfig.prevTouches[0] = null;
-		this.canvasConfig.prevTouches[1] = null;
-		this.onMouseUp();
+		Board.canvasConfig.prevTouches[0] = null;
+		Board.canvasConfig.prevTouches[1] = null;
+		this.onMouseUp(null);
 	}
 
 	onKeyDown(evt: KeyboardEvent) {
@@ -256,11 +261,11 @@ export default class Board extends BoardEvents {
 	}
 
 	undo() {
-		if (this.history.length === 0) return;
+		if (Board.history.length === 0) return;
 
-		this.clearCanvas();
-		this.history.pop();
-		this.reDraw();
+		Board.clearCanvas();
+		Board.history.pop();
+		Board.reDraw();
 	}
 
 	saveImage() {
@@ -272,15 +277,15 @@ export default class Board extends BoardEvents {
 	}
 
 	clearBoard() {
-		this.clearCanvas();
-		this.currentDraw = DrawableFactory.create(DrawableType.HandDrawing, {
+		Board.clearCanvas();
+		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
 			strokeColor: this.config.color,
 			lineWidth: this.config.brushSize,
 		});
-		this.history = [];
+		Board.history = [];
 	}
 
-	clearCanvas(point: Point | null = null) {
+	static clearCanvas(point: Point | null = null) {
 		if (point === null)
 			Board.ctx.clearRect(
 				0,

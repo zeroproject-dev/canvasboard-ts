@@ -60,3 +60,14 @@ body {
 .button:hover {
 	background-color: #eee;
 }
+
+.input {
+	display: block;
+	width: 100%;
+}
+
+.label {
+	font-size: 0.8rem;
+	display: flex;
+	align-items: center;
+}

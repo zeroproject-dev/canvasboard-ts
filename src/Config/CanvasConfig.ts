@@ -1,6 +1,6 @@
 import Board from '../Board';
 
-export default class CanvasConfig {
+export default class canvasConfig {
 	offsetX: number;
 	offsetY: number;
 	cursorX: number;
@@ -11,7 +11,7 @@ export default class CanvasConfig {
 
 	prevTouches: Touch[] | null[] = [null, null];
 
-	private static _instance: CanvasConfig;
+	private static _instance: canvasConfig;
 
 	constructor() {
 		this.offsetX = 0;

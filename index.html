@@ -10,9 +10,16 @@
 
 <body>
   <div class="configbar">
-    <input type="color" id="color" value="#000000" />
-    <input type="range" id="size" min="1" max="100" value="10" />
-    <input type="button" class="button" id="clear" value="Clear" />
+    <div id="drawables">
+      <button class="button" data-type="pen">Pen</button>
+      <button class="button" data-type="rectangle">Rectangle</button>
+    </div>
+    <input class="input" type="color" id="color" value="#000000" />
+    <label class="label">
+      <input class="input" type="range" id="size" min="1" max="100" value="10" />
+      <span>10</span>
+    </label>
+    <input class="input button" type="button" id="clear" value="Clear" />
     <a id="download" class="button">Save</a>
   </div>
   <canvas id="canvas"></canvas>
