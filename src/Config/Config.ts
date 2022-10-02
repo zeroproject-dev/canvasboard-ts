@@ -1,103 +1,62 @@
+import Board from '../Board';
 import { DrawableType } from '../Drawables/DrawableFactory';
 
-export default class Config {
-	colorInput: HTMLInputElement;
-	sizeInput: HTMLInputElement;
-	downloadButton: HTMLButtonElement;
-	clearButton: HTMLButtonElement;
+const drawables: { [key: string]: DrawableType } = {
+	pen: DrawableType.HandDrawing,
+	rectangle: DrawableType.Rectangle,
+};
 
-	public static currentDrawing: DrawableType;
+export let strokeColor: string = '#000000';
+export let lineWidth: number = 10;
+export let fillColor: string = '#000000';
+export let currentDrawable: DrawableType = DrawableType.HandDrawing;
 
-	drawables: { [key: string]: DrawableType } = {
-		pen: DrawableType.HandDrawing,
-		rectangle: DrawableType.Rectangle,
-	};
-
-	private static _instance: Config | null = null;
-
-	constructor() {
-		this.colorInput = document.getElementById('color') as HTMLInputElement;
-		this.sizeInput = document.getElementById('size') as HTMLInputElement;
-
-		Config.currentDrawing = DrawableType.HandDrawing;
-
-		this.downloadButton = document.getElementById(
-			'download'
-		) as HTMLButtonElement;
-		this.clearButton = document.getElementById('clear') as HTMLButtonElement;
-
-		this.onColorChange((color: string) => {
-			this.color = color;
-		});
-
-		this.onBrushSizeChange((brushSize: number) => {
-			this.brushSize = brushSize;
-		});
-
-		this.onDrawableClick();
-	}
-
-	static get getInstance() {
-		if (this._instance === null) {
-			this._instance = new Config();
-		}
-
-		return this._instance;
-	}
-
-	get color() {
-		return this.colorInput.value;
-	}
-
-	get brushSize() {
-		return Number(this.sizeInput.value);
-	}
-
-	set color(color: string) {
-		this.colorInput.value = color;
-	}
-
-	set brushSize(size: number) {
-		this.sizeInput.value = size.toString();
-	}
-
-	onColorChange(callback: (color: string) => void) {
-		this.colorInput.addEventListener('change', () => {
-			callback(this.color);
-		});
-	}
-
-	onBrushSizeChange(callback: (brushSize: number) => void) {
-		this.sizeInput.addEventListener('change', (evt: Event) => {
+export const initializeConfig = () => {
+	// Line width
+	(document.getElementById('size') as HTMLInputElement).addEventListener(
+		'change',
+		(evt: Event) => {
 			const target: HTMLInputElement = evt.target as HTMLInputElement;
 			const sibiling: HTMLSpanElement =
 				target.nextElementSibling as HTMLSpanElement;
 
 			sibiling.textContent = target.value;
 
-			callback(Number(this.sizeInput.value));
-		});
-	}
+			lineWidth = Number(target.value);
+		}
+	);
 
-	onDownloadClick(callback: () => void) {
-		this.downloadButton.addEventListener('click', () => {
-			callback();
-		});
-	}
+	// Stroke color
+	(document.getElementById('color') as HTMLInputElement).addEventListener(
+		'change',
+		({ target }: Event) => {
+			strokeColor = (target as HTMLInputElement).value;
+		}
+	);
 
-	onClearClick(callback: () => void) {
-		this.clearButton.addEventListener('click', () => {
-			callback();
-		});
-	}
+	// Clear Button
+	(document.getElementById('clear') as HTMLButtonElement).addEventListener(
+		'click',
+		() => {
+			Board.clearBoard();
+		}
+	);
 
-	onDrawableClick() {
-		const drawables = document.getElementById('drawables') as HTMLDivElement;
-		drawables.addEventListener('click', (evt: MouseEvent) => {
-			const target = evt.target as HTMLButtonElement;
-			const drawable = target.dataset.type;
-			if (drawable === undefined) return;
-			Config.currentDrawing = this.drawables[drawable];
-		});
-	}
-}
+	// Download Button
+	const downloadButton = document.getElementById(
+		'download'
+	) as HTMLButtonElement;
+	downloadButton.addEventListener('click', () => {
+		downloadButton.setAttribute('download', 'image.png');
+		downloadButton.setAttribute('href', Board.canvas.toDataURL('image/png'));
+	});
+
+	// Drawables
+	const drawablesUI = document.getElementById('drawables') as HTMLDivElement;
+	drawablesUI.addEventListener('click', (evt: MouseEvent) => {
+		const target = evt.target as HTMLButtonElement;
+		const drawable = target.dataset.type;
+		if (drawable === undefined) return;
+		currentDrawable = drawables[drawable];
+	});
+};

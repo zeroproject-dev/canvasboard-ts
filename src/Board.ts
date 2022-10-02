@@ -1,9 +1,14 @@
 import BoardEvents from './BoardEvents';
-import Config from './Config/Config';
-import { DrawableFactory } from './Drawables/DrawableFactory';
+import {
+	initializeConfig,
+	strokeColor,
+	lineWidth,
+	currentDrawable,
+} from './Config/Config';
 import Drawable from './types/Drawable';
 import Point from './types/Point';
 import canvasConfig from './Config/CanvasConfig';
+import { DrawableFactory } from './Drawables/DrawableFactory';
 
 export default class Board extends BoardEvents {
 	public static canvas: HTMLCanvasElement;
@@ -13,8 +18,6 @@ export default class Board extends BoardEvents {
 	isDragging: boolean;
 	static history: Drawable[] = [];
 	currentDraw: Drawable | null = null;
-
-	config: Config;
 
 	static canvasConfig: canvasConfig;
 
@@ -29,10 +32,7 @@ export default class Board extends BoardEvents {
 		this.isDrawing = false;
 		this.isDragging = false;
 
-		this.config = Config.getInstance;
-
-		this.config.onDownloadClick(this.saveImage.bind(this));
-		this.config.onClearClick(this.clearBoard.bind(this));
+		initializeConfig();
 
 		Board.canvasConfig = canvasConfig.getInstance;
 
@@ -71,13 +71,21 @@ export default class Board extends BoardEvents {
 		Board.clearCanvas();
 
 		Board.history.forEach((draw) => {
-			Board.ctx.beginPath();
 			Board.ctx.strokeStyle = draw.properties.strokeColor as string;
-			Board.ctx.lineWidth = draw.properties.lineWidth as number;
+			Board.ctx.lineWidth =
+				(draw.properties.lineWidth as number) * Board.canvasConfig.scale;
+			Board.ctx.moveTo(
+				draw.properties.initialX as number,
+				draw.properties.initialY as number
+			);
 
+			Board.ctx.beginPath();
 			draw.reDraw();
+			Board.ctx.closePath();
 		});
-		Board.ctx.closePath();
+
+		Board.ctx.strokeStyle = strokeColor as string;
+		Board.ctx.lineWidth = lineWidth * Board.canvasConfig.scale;
 	}
 
 	onMouseDown(evt: MouseEvent) {
@@ -90,9 +98,10 @@ export default class Board extends BoardEvents {
 		Board.canvasConfig.prevCursorX = evt.pageX;
 		Board.canvasConfig.prevCursorY = evt.pageY;
 
-		this.createDrawable();
-
-		this.currentDraw?.startDraw(evt);
+		if (this.isDrawing) {
+			this.createDrawable();
+			this.currentDraw?.startDraw(evt);
+		}
 	}
 
 	onMouseMove(evt: MouseEvent) {
@@ -257,24 +266,15 @@ export default class Board extends BoardEvents {
 		Board.reDraw();
 	}
 
-	saveImage() {
-		this.config.downloadButton.setAttribute('download', 'image.png');
-		this.config.downloadButton.setAttribute(
-			'href',
-			Board.canvas.toDataURL('image/png')
-		);
-	}
-
-	clearBoard() {
+	static clearBoard() {
 		Board.clearCanvas();
-		this.createDrawable();
 		Board.history = [];
 	}
 
 	createDrawable() {
-		this.currentDraw = DrawableFactory.create(Config.currentDrawing, {
-			strokeColor: this.config.color,
-			lineWidth: this.config.brushSize,
+		this.currentDraw = DrawableFactory.create(currentDrawable, {
+			strokeColor,
+			lineWidth,
 		});
 	}
 

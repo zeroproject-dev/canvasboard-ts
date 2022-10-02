@@ -1,10 +1,12 @@
 import Board from '../Board';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
-import Point from '../types/Point';
 
 export default class HandDrawing implements Drawable {
-	line: Point[];
+	line: Array<Array<number>>;
+	prevX: number = 0;
+	prevY: number = 0;
+
 	properties: DrawableProperties;
 
 	constructor(properties: DrawableProperties) {
@@ -18,27 +20,27 @@ export default class HandDrawing implements Drawable {
 	}
 
 	startDraw(): void {
-		Board.ctx.beginPath();
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
 		Board.ctx.lineWidth =
 			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
 		Board.ctx.lineCap = 'round';
+		Board.ctx.lineJoin = 'round';
+
+		Board.ctx.beginPath();
+
+		this.properties.initialX = Board.canvasConfig.cursorX;
+		this.properties.initialY = Board.canvasConfig.cursorY;
 	}
 
 	draw(evt: MouseEvent | TouchEvent): void {
-		let point = {} as Point;
-		if (evt instanceof MouseEvent) {
-			point = {
-				prevX: Board.canvasConfig.toWorldX(Board.canvasConfig.prevCursorX),
-				prevY: Board.canvasConfig.toWorldY(Board.canvasConfig.prevCursorY),
-				x: Board.canvasConfig.toWorldX(evt.pageX),
-				y: Board.canvasConfig.toWorldY(evt.pageY),
-			};
+		let coords = [0, 0];
 
-			Board.ctx.moveTo(
-				Board.canvasConfig.prevCursorX,
-				Board.canvasConfig.prevCursorY
-			);
+		if (evt instanceof MouseEvent) {
+			coords = [
+				Board.canvasConfig.toWorldX(evt.pageX),
+				Board.canvasConfig.toWorldY(evt.pageY),
+			];
+
 			Board.ctx.lineTo(Board.canvasConfig.cursorX, Board.canvasConfig.cursorY);
 		} else if (evt instanceof TouchEvent) {
 			if (
@@ -47,46 +49,26 @@ export default class HandDrawing implements Drawable {
 			)
 				return;
 
-			point = {
-				prevX: Board.canvasConfig.toWorldX(
-					Board.canvasConfig.prevTouches[0].pageX
-				),
-				prevY: Board.canvasConfig.toWorldY(
-					Board.canvasConfig.prevTouches[0].pageY
-				),
-				x: Board.canvasConfig.toWorldX(evt.touches[0].pageX),
-				y: Board.canvasConfig.toWorldY(evt.touches[0].pageY),
-			};
+			coords = [
+				Board.canvasConfig.toWorldX(evt.touches[0].pageX),
+				Board.canvasConfig.toWorldY(evt.touches[0].pageY),
+			];
 
-			Board.ctx.moveTo(
-				Board.canvasConfig.prevTouches[0].pageX,
-				Board.canvasConfig.prevTouches[0].pageY
-			);
 			Board.ctx.lineTo(evt.touches[0].pageX, evt.touches[0].pageY);
 		}
 
-		this.line.push(point);
+		this.line.push(coords);
 		Board.ctx.stroke();
 	}
 
 	reDraw(): void {
-		Board.ctx.beginPath();
-		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
-
-		this.line.forEach((point) => {
-			Board.ctx.moveTo(
-				Board.canvasConfig.toScreenX(point.prevX),
-				Board.canvasConfig.toScreenY(point.prevY)
-			);
+		for (let i = 0; i < this.line.length; i++) {
 			Board.ctx.lineTo(
-				Board.canvasConfig.toScreenX(point.x),
-				Board.canvasConfig.toScreenY(point.y)
+				Board.canvasConfig.toScreenX(this.line[i][0]),
+				Board.canvasConfig.toScreenY(this.line[i][1])
 			);
-			Board.ctx.stroke();
-		});
-		Board.ctx.closePath();
+		}
+		Board.ctx.stroke();
 	}
 
 	endDraw(): void {
