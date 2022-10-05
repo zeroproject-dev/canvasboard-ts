@@ -6,6 +6,18 @@ const drawables: { [key: string]: DrawableType } = {
 	rectangle: DrawableType.Rectangle,
 };
 
+const getAncestorByTagName = (
+	element: HTMLElement,
+	tagName: string
+): HTMLElement => {
+	let parent = element.parentElement;
+	while (parent !== null) {
+		if (parent.tagName === tagName) return parent;
+		parent = parent.parentElement;
+	}
+	return element;
+};
+
 export let strokeColor: string = '#000000';
 export let lineWidth: number = 10;
 export let fillColor: string = '#000000';
@@ -42,6 +54,14 @@ export const initializeConfig = () => {
 		}
 	);
 
+	// Undo button
+	(document.getElementById('undo') as HTMLButtonElement).addEventListener(
+		'click',
+		() => {
+			Board.undo();
+		}
+	);
+
 	// Download Button
 	const downloadButton = document.getElementById(
 		'download'
@@ -54,7 +74,10 @@ export const initializeConfig = () => {
 	// Drawables
 	const drawablesUI = document.getElementById('drawables') as HTMLDivElement;
 	drawablesUI.addEventListener('click', (evt: MouseEvent) => {
-		const target = evt.target as HTMLButtonElement;
+		let target = evt.target as HTMLButtonElement;
+		if (target.tagName !== 'BUTTON') {
+			target = getAncestorByTagName(target, 'BUTTON') as HTMLButtonElement;
+		}
 		const drawable = target.dataset.type;
 		if (drawable === undefined) return;
 		currentDrawable = drawables[drawable];

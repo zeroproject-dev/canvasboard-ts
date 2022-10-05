@@ -31,7 +31,7 @@ body {
 	top: 50%;
 	left: 0;
 	transform: translate(0, -50%);
-	width: 150px;
+	width: 100px;
 	border: 1px solid rgba(0, 0, 0, 0.3);
 	border-radius: 0 5px 5px 0px;
 	padding: 10px;
@@ -70,4 +70,39 @@ body {
 	font-size: 0.8rem;
 	display: flex;
 	align-items: center;
+}
+
+#drawables {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 5px;
+}
+
+@media (max-width: 1024px) {
+	.configbar {
+		width: 100%;
+		max-width: max-content;
+		height: 100px;
+		top: 0;
+		left: 50%;
+		transform: translate(-50%, 0);
+		flex-direction: row;
+	}
+
+	#drawables {
+		grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+		grid-template-rows: repeat(2, 1fr);
+	}
+
+	.actions {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 5px;
+	}
+}
+
+.icon {
+	width: 100%;
+	height: 100%;
+	max-width: 24px;
 }

@@ -254,11 +254,11 @@ export default class Board extends BoardEvents {
 
 	onKeyDown(evt: KeyboardEvent) {
 		if (evt.ctrlKey && (evt.key === '\u001a' || evt.key === 'z')) {
-			this.undo();
+			Board.undo();
 		}
 	}
 
-	undo() {
+	static undo() {
 		if (Board.history.length === 0) return;
 
 		Board.clearCanvas();
