@@ -183,6 +183,15 @@ export default class Board extends BoardEvents {
 	}
 
 	onTouchMove(evt: TouchEvent) {
+		if (this.isDrawing) {
+			this.currentDraw?.cancelDraw();
+			this.createDrawable();
+
+			this.isDrawing = false;
+			this.isDragging = false;
+			return;
+		}
+
 		if (
 			Board.canvasConfig.prevTouches[0] === null ||
 			Board.canvasConfig.prevTouches[1] === null
@@ -218,7 +227,10 @@ export default class Board extends BoardEvents {
 			);
 
 			var zoomAmount = hypot / prevHypot;
-			Board.canvasConfig.scale = Board.canvasConfig.scale * zoomAmount;
+			const newScale = Board.canvasConfig.scale * zoomAmount;
+
+			if (newScale < 0.1 || newScale > 10) return;
+			Board.canvasConfig.scale = newScale;
 			const scaleAmount = 1 - zoomAmount;
 
 			const panX = midX - prevMidX;
