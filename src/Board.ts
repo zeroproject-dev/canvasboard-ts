@@ -183,15 +183,6 @@ export default class Board extends BoardEvents {
 	}
 
 	onTouchMove(evt: TouchEvent) {
-		if (this.isDrawing) {
-			this.currentDraw?.cancelDraw();
-			this.createDrawable();
-
-			this.isDrawing = false;
-			this.isDragging = false;
-			return;
-		}
-
 		if (
 			Board.canvasConfig.prevTouches[0] === null ||
 			Board.canvasConfig.prevTouches[1] === null
@@ -207,6 +198,14 @@ export default class Board extends BoardEvents {
 		}
 
 		if (this.isDragging) {
+			if (this.isDrawing) {
+				this.currentDraw?.cancelDraw();
+				this.createDrawable();
+
+				this.isDrawing = false;
+				this.isDragging = false;
+				return;
+			}
 			evt.preventDefault();
 			const touch1X = evt.touches[1].pageX;
 			const touch1Y = evt.touches[1].pageY;
