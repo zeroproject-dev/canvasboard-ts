@@ -4,6 +4,7 @@ import { DrawableType } from '../Drawables/DrawableFactory';
 const drawables: { [key: string]: DrawableType } = {
 	pen: DrawableType.HandDrawing,
 	rectangle: DrawableType.Rectangle,
+	circle: DrawableType.Circle,
 };
 
 const getAncestorByTagName = (

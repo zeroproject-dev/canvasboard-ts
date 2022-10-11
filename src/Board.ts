@@ -4,6 +4,7 @@ import {
 	strokeColor,
 	lineWidth,
 	currentDrawable,
+	fillColor,
 } from './Config/Config';
 import Drawable from './types/Drawable';
 import Point from './types/Point';
@@ -37,6 +38,7 @@ export default class Board extends BoardEvents {
 		Board.canvasConfig = canvasConfig.getInstance;
 
 		this.createDrawable();
+		Board.clearCanvas();
 	}
 
 	initilizeEvents() {
@@ -290,13 +292,17 @@ export default class Board extends BoardEvents {
 	}
 
 	static clearCanvas(point: Point | null = null) {
+		Board.ctx.fillStyle = '#fff';
+
 		if (point === null)
-			Board.ctx.clearRect(
+			Board.ctx.fillRect(
 				0,
 				0,
 				document.body.clientWidth,
 				document.body.clientHeight
 			);
-		else Board.ctx.clearRect(point.prevX, point.prevY, point.x, point.y);
+		else Board.ctx.fillRect(point.prevX, point.prevY, point.x, point.y);
+
+		Board.ctx.fillStyle = fillColor;
 	}
 }

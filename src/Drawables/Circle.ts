@@ -2,19 +2,20 @@ import Board from '../Board';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
 
-export class Rectangle implements Drawable {
+export class Circle implements Drawable {
 	properties: DrawableProperties;
-	initialRealX: number;
-	initialRealY: number;
-	width: number;
-	height: number;
+	worldCenterX: number;
+	worldCenterY: number;
+	radiusX: number;
+	radiusY: number;
 
 	constructor(properties: DrawableProperties) {
 		this.properties = properties;
-		this.initialRealX = 0;
-		this.initialRealY = 0;
-		this.width = 0;
-		this.height = 0;
+
+		this.worldCenterX = 0;
+		this.worldCenterY = 0;
+		this.radiusX = 0;
+		this.radiusY = 0;
 	}
 
 	startDraw(evt: MouseEvent | TouchEvent): void {
@@ -27,8 +28,6 @@ export class Rectangle implements Drawable {
 
 		this.properties.initialX = x;
 		this.properties.initialY = y;
-		this.initialRealX = Board.canvasConfig.toWorldX(x);
-		this.initialRealY = Board.canvasConfig.toWorldY(y);
 	}
 
 	draw(evt: MouseEvent | TouchEvent): void {
@@ -39,17 +38,28 @@ export class Rectangle implements Drawable {
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
 
-		const displayWidth = x - (this.properties.initialX as number);
-		const displayHeight = y - (this.properties.initialY as number);
+		let currentRadiusX = (x - (this.properties.initialX as number)) / 2;
+		let currentRadiusY = (y - (this.properties.initialY as number)) / 2;
 
-		this.width = displayWidth / Board.canvasConfig.scale;
-		this.height = displayHeight / Board.canvasConfig.scale;
+		const centerX = (this.properties.initialX as number) + currentRadiusX;
+		const centerY = (this.properties.initialY as number) + currentRadiusY;
 
-		Board.ctx.rect(
-			this.properties.initialX as number,
-			this.properties.initialY as number,
-			displayWidth,
-			displayHeight
+		currentRadiusX = Math.abs(currentRadiusX);
+		currentRadiusY = Math.abs(currentRadiusY);
+
+		this.worldCenterX = Board.canvasConfig.toWorldX(centerX);
+		this.worldCenterY = Board.canvasConfig.toWorldY(centerY);
+		this.radiusX = currentRadiusX / Board.canvasConfig.scale;
+		this.radiusY = currentRadiusY / Board.canvasConfig.scale;
+
+		Board.ctx.ellipse(
+			centerX,
+			centerY,
+			currentRadiusX,
+			currentRadiusY,
+			0,
+			0,
+			2 * Math.PI
 		);
 
 		Board.ctx.stroke();
@@ -60,12 +70,17 @@ export class Rectangle implements Drawable {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
 		Board.ctx.lineWidth =
 			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
-		Board.ctx.rect(
-			Board.canvasConfig.toScreenX(this.initialRealX),
-			Board.canvasConfig.toScreenY(this.initialRealY),
-			this.width * Board.canvasConfig.scale,
-			this.height * Board.canvasConfig.scale
+
+		Board.ctx.ellipse(
+			Board.canvasConfig.toScreenX(this.worldCenterX),
+			Board.canvasConfig.toScreenY(this.worldCenterY),
+			this.radiusX * Board.canvasConfig.scale,
+			this.radiusY * Board.canvasConfig.scale,
+			0,
+			0,
+			2 * Math.PI
 		);
+
 		Board.ctx.stroke();
 	}
 

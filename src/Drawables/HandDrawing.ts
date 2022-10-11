@@ -33,29 +33,15 @@ export default class HandDrawing implements Drawable {
 	}
 
 	draw(evt: MouseEvent | TouchEvent): void {
-		let coords = [0, 0];
+		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
+		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
 
-		if (evt instanceof MouseEvent) {
-			coords = [
-				Board.canvasConfig.toWorldX(evt.pageX),
-				Board.canvasConfig.toWorldY(evt.pageY),
-			];
+		const coords = [
+			Board.canvasConfig.toWorldX(x),
+			Board.canvasConfig.toWorldY(y),
+		];
 
-			Board.ctx.lineTo(Board.canvasConfig.cursorX, Board.canvasConfig.cursorY);
-		} else if (evt instanceof TouchEvent) {
-			if (
-				Board.canvasConfig.prevTouches[0] === null ||
-				Board.canvasConfig.prevTouches[1] === null
-			)
-				return;
-
-			coords = [
-				Board.canvasConfig.toWorldX(evt.touches[0].pageX),
-				Board.canvasConfig.toWorldY(evt.touches[0].pageY),
-			];
-
-			Board.ctx.lineTo(evt.touches[0].pageX, evt.touches[0].pageY);
-		}
+		Board.ctx.lineTo(x, y);
 
 		this.line.push(coords);
 		Board.ctx.stroke();
