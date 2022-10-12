@@ -39,14 +39,28 @@ export default class HandDrawing implements Drawable {
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
 
-		const coords = [
-			Board.canvasConfig.toWorldX(x),
-			Board.canvasConfig.toWorldY(y),
-		];
+		if (Board.isPerfectShape) {
+			Board.clearCanvas();
+			Board.reDraw();
+			Board.ctx.beginPath();
 
-		Board.ctx.lineTo(x, y);
+			Board.ctx.moveTo(
+				this.properties.initialX as number,
+				this.properties.initialY as number
+			);
 
-		this.line.push(coords);
+			Board.ctx.lineTo(x, y);
+
+			Board.ctx.closePath();
+		} else {
+			const coords = [
+				Board.canvasConfig.toWorldX(x),
+				Board.canvasConfig.toWorldY(y),
+			];
+			Board.ctx.lineTo(x, y);
+			this.line.push(coords);
+		}
+
 		Board.ctx.stroke();
 	}
 
@@ -60,8 +74,29 @@ export default class HandDrawing implements Drawable {
 		Board.ctx.stroke();
 	}
 
-	endDraw(): void {
-		this.line = this.normalizeArray(this.line);
+	endDraw(evt: MouseEvent | TouchEvent): void {
+		if (Board.isPerfectShape) {
+			const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
+			const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
+
+			this.line = [];
+
+			const coords = [
+				Board.canvasConfig.toWorldX(x),
+				Board.canvasConfig.toWorldY(y),
+			];
+
+			this.line.push([
+				Board.canvasConfig.toWorldX(this.properties.initialX as number),
+				Board.canvasConfig.toWorldY(this.properties.initialY as number),
+			]);
+			this.line.push(coords);
+		}
+
+		if (this.line.length > 2) {
+			this.line = this.normalizeArray(this.line);
+		}
+
 		Board.ctx.closePath();
 	}
 
@@ -70,26 +105,22 @@ export default class HandDrawing implements Drawable {
 	}
 
 	normalizeArray(arr: Array<Array<number>>): Array<Array<number>> {
-		const normalizedArray = [];
-		if (arr.length < 3) return arr;
+		let normalizedArray: Array<Array<number>> = [];
 
-		normalizedArray.push([this.line[0][0], this.line[0][1]]);
+		normalizedArray = arr.filter((item, index) => {
+			if (index === 0) {
+				return true;
+			}
+			if (index === arr.length - 1) {
+				return false;
+			}
 
-		for (let i = 1; i < this.line.length - 1; i++) {
-			if (
-				this.line[i][0] === this.line[i + 1][0] ||
-				this.line[i][1] === this.line[i + 1][1]
-			)
-				continue;
+			const prevItem = arr[index - 1];
 
-			normalizedArray.push([this.line[i][0], this.line[i][1]]);
-		}
+			return !(prevItem[0] === item[0] || prevItem[1] === item[1]);
+		});
 
-		normalizedArray.push([
-			this.line[this.line.length - 1][0],
-			this.line[this.line.length - 1][1],
-		]);
-
+		normalizedArray.push([arr[arr.length - 1][0], arr[arr.length - 1][1]]);
 		return normalizedArray;
 	}
 }

@@ -41,8 +41,21 @@ export class Circle implements Drawable {
 		let currentRadiusX = (x - (this.properties.initialX as number)) / 2;
 		let currentRadiusY = (y - (this.properties.initialY as number)) / 2;
 
-		const centerX = (this.properties.initialX as number) + currentRadiusX;
-		const centerY = (this.properties.initialY as number) + currentRadiusY;
+		if (Board.isPerfectShape) {
+			const radius = Math.min(
+				currentRadiusX < 0 ? Math.abs(currentRadiusX) : currentRadiusX,
+				currentRadiusY < 0 ? Math.abs(currentRadiusY) : currentRadiusY
+			);
+
+			const radiusXSign = currentRadiusX < 0 ? -1 : 1;
+			const radiusYSign = currentRadiusY < 0 ? -1 : 1;
+
+			currentRadiusX = radius * radiusXSign;
+			currentRadiusY = radius * radiusYSign;
+		}
+
+		let centerX = (this.properties.initialX as number) + currentRadiusX;
+		let centerY = (this.properties.initialY as number) + currentRadiusY;
 
 		currentRadiusX = Math.abs(currentRadiusX);
 		currentRadiusY = Math.abs(currentRadiusY);

@@ -17,6 +17,9 @@ export default class Board extends BoardEvents {
 
 	isDrawing: boolean;
 	isDragging: boolean;
+
+	timer: number = 0;
+	static isPerfectShape: boolean = false;
 	static history: Drawable[] = [];
 	currentDraw: Drawable | null = null;
 
@@ -90,6 +93,34 @@ export default class Board extends BoardEvents {
 		Board.ctx.lineWidth = lineWidth * Board.canvasConfig.scale;
 	}
 
+	draw(evt: MouseEvent | TouchEvent) {
+		if (this.isDrawing) {
+			clearTimeout(this.timer);
+			if (!Board.isPerfectShape)
+				this.timer = setTimeout(() => {
+					Board.isPerfectShape = true;
+					this.currentDraw?.draw(evt);
+					console.log('perfect');
+				}, 1000);
+			this.currentDraw?.draw(evt);
+		}
+	}
+
+	endDraw(evt: MouseEvent | TouchEvent) {
+		if (this.isDrawing) {
+			this.currentDraw?.endDraw(evt);
+
+			if (!this.currentDraw?.isEmpty()) {
+				Board.history.push(this.currentDraw as Drawable);
+			}
+		}
+
+		this.isDrawing = false;
+		this.isDragging = false;
+		Board.isPerfectShape = false;
+		clearTimeout(this.timer);
+	}
+
 	onMouseDown(evt: MouseEvent) {
 		evt.preventDefault();
 		this.isDrawing = evt.button == 0;
@@ -110,9 +141,7 @@ export default class Board extends BoardEvents {
 		Board.canvasConfig.cursorX = evt.pageX;
 		Board.canvasConfig.cursorY = evt.pageY;
 
-		if (this.isDrawing) {
-			this.currentDraw?.draw(evt);
-		}
+		this.draw(evt);
 
 		if (this.isDragging) {
 			Board.canvasConfig.offsetX +=
@@ -129,17 +158,8 @@ export default class Board extends BoardEvents {
 		Board.canvasConfig.prevCursorY = Board.canvasConfig.cursorY;
 	}
 
-	onMouseUp(evt: MouseEvent | null) {
-		if (this.isDrawing) {
-			this.currentDraw?.endDraw(evt);
-
-			if (!this.currentDraw?.isEmpty()) {
-				Board.history.push(this.currentDraw as Drawable);
-			}
-		}
-
-		this.isDrawing = false;
-		this.isDragging = false;
+	onMouseUp(evt: MouseEvent) {
+		this.endDraw(evt);
 	}
 
 	onMouseWheel(evt: WheelEvent) {
@@ -262,10 +282,10 @@ export default class Board extends BoardEvents {
 		Board.canvasConfig.prevTouches[1] = evt.touches[1];
 	}
 
-	onTouchEnd() {
+	onTouchEnd(evt: TouchEvent) {
+		this.endDraw(evt);
 		Board.canvasConfig.prevTouches[0] = null;
 		Board.canvasConfig.prevTouches[1] = null;
-		this.onMouseUp(null);
 	}
 
 	onKeyDown(evt: KeyboardEvent) {

@@ -39,8 +39,21 @@ export class Rectangle implements Drawable {
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
 
-		const displayWidth = x - (this.properties.initialX as number);
-		const displayHeight = y - (this.properties.initialY as number);
+		let displayWidth = x - (this.properties.initialX as number);
+		let displayHeight = y - (this.properties.initialY as number);
+
+		if (Board.isPerfectShape) {
+			const size = Math.min(
+				displayWidth < 0 ? Math.abs(displayWidth) : displayWidth,
+				displayHeight < 0 ? Math.abs(displayHeight) : displayHeight
+			);
+
+			let heightSign = displayHeight < 0 ? -1 : 1;
+			let widthSign = displayWidth < 0 ? -1 : 1;
+
+			displayWidth = size * widthSign;
+			displayHeight = size * heightSign;
+		}
 
 		this.width = displayWidth / Board.canvasConfig.scale;
 		this.height = displayHeight / Board.canvasConfig.scale;
