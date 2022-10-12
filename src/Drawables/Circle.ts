@@ -92,4 +92,8 @@ export class Circle implements Drawable {
 	endDraw(): void {
 		Board.ctx.closePath();
 	}
+
+	isEmpty(): boolean {
+		return this.radiusX === 0 && this.radiusY === 0;
+	}
 }

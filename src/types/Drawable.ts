@@ -8,4 +8,5 @@ export default interface Drawable {
 	reDraw(): void;
 	cancelDraw(): void;
 	endDraw(event: MouseEvent | TouchEvent | null): void;
+	isEmpty(): boolean;
 }

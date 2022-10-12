@@ -77,4 +77,8 @@ export class Rectangle implements Drawable {
 	endDraw(): void {
 		Board.ctx.closePath();
 	}
+
+	isEmpty(): boolean {
+		return this.width === 0 && this.height === 0;
+	}
 }

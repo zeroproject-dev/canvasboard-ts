@@ -132,7 +132,10 @@ export default class Board extends BoardEvents {
 	onMouseUp(evt: MouseEvent | null) {
 		if (this.isDrawing) {
 			this.currentDraw?.endDraw(evt);
-			Board.history.push(this.currentDraw as Drawable);
+
+			if (!this.currentDraw?.isEmpty()) {
+				Board.history.push(this.currentDraw as Drawable);
+			}
 		}
 
 		this.isDrawing = false;
