@@ -100,7 +100,6 @@ export default class Board extends BoardEvents {
 				this.timer = setTimeout(() => {
 					Board.isPerfectShape = true;
 					this.currentDraw?.draw(evt);
-					console.log('perfect');
 				}, 1000);
 			this.currentDraw?.draw(evt);
 		}
@@ -218,9 +217,7 @@ export default class Board extends BoardEvents {
 		const prevTouch0X = Board.canvasConfig.prevTouches[0].pageX;
 		const prevTouch0Y = Board.canvasConfig.prevTouches[0].pageY;
 
-		if (this.isDrawing) {
-			this.currentDraw?.draw(evt);
-		}
+		this.draw(evt);
 
 		if (this.isDragging) {
 			if (this.isDrawing) {

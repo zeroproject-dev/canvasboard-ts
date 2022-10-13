@@ -76,8 +76,10 @@ export default class HandDrawing implements Drawable {
 
 	endDraw(evt: MouseEvent | TouchEvent): void {
 		if (Board.isPerfectShape) {
-			const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
-			const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
+			const x =
+				evt instanceof MouseEvent ? evt.pageX : evt.changedTouches[0].pageX;
+			const y =
+				evt instanceof MouseEvent ? evt.pageY : evt.changedTouches[0].pageY;
 
 			this.line = [];
 
