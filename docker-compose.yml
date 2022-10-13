@@ -8,5 +8,11 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    ports:
-      - 8080:80
+    expose:
+      - 80:80
+    networks:
+      - nginx_proxy_defautl
+
+networks:
+  nginx_proxy_defautl:
+    external: true

@@ -1,0 +1,21 @@
+name: Build and Deploy CanvasBoard
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deployment:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: productionMain
+    steps:
+      - name: deploy page
+        uses: fifsky/ssh-action@master
+        with:
+          args: '-tt'
+          host: ${{ secrets.HOST }}
+          user: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          command: ~/deploy.sh canvasboard-ts
