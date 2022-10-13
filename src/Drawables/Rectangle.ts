@@ -43,10 +43,7 @@ export class Rectangle implements Drawable {
 		let displayHeight = y - (this.properties.initialY as number);
 
 		if (Board.isPerfectShape) {
-			const size = Math.min(
-				displayWidth < 0 ? Math.abs(displayWidth) : displayWidth,
-				displayHeight < 0 ? Math.abs(displayHeight) : displayHeight
-			);
+			const size = Math.min(Math.abs(displayWidth), Math.abs(displayHeight));
 
 			let heightSign = displayHeight < 0 ? -1 : 1;
 			let widthSign = displayWidth < 0 ? -1 : 1;

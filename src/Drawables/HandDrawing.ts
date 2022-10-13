@@ -4,8 +4,6 @@ import { DrawableProperties } from '../types/DrawableProperties';
 
 export default class HandDrawing implements Drawable {
 	line: Array<Array<number>>;
-	prevX: number = 0;
-	prevY: number = 0;
 
 	properties: DrawableProperties;
 

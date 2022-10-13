@@ -43,8 +43,8 @@ export class Circle implements Drawable {
 
 		if (Board.isPerfectShape) {
 			const radius = Math.min(
-				currentRadiusX < 0 ? Math.abs(currentRadiusX) : currentRadiusX,
-				currentRadiusY < 0 ? Math.abs(currentRadiusY) : currentRadiusY
+				Math.abs(currentRadiusX),
+				Math.abs(currentRadiusY)
 			);
 
 			const radiusXSign = currentRadiusX < 0 ? -1 : 1;
