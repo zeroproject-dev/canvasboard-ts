@@ -25,8 +25,7 @@ export default abstract class BoardEvents {
 	onMouseMoveEvent(callback: (evt: MouseEvent) => void) {
 		Board.canvas.addEventListener(
 			'mousemove',
-			// this.throttle<MouseEvent>(callback, this.throttleTime)
-			callback
+			this.throttle<MouseEvent>(callback, this.throttleTime)
 		);
 	}
 

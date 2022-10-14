@@ -4,11 +4,15 @@ import { DrawableProperties } from '../types/DrawableProperties';
 
 export default class HandDrawing implements Drawable {
 	line: Array<Array<number>>;
+	initialRealX: number;
+	initialRealY: number;
 
 	properties: DrawableProperties;
 
 	constructor(properties: DrawableProperties) {
 		this.line = [];
+		this.initialRealX = 0;
+		this.initialRealY = 0;
 
 		this.properties = properties;
 	}
@@ -31,45 +35,95 @@ export default class HandDrawing implements Drawable {
 
 		this.properties.initialX = x;
 		this.properties.initialY = y;
+		this.initialRealX = Board.canvasConfig.toWorldX(x);
+		this.initialRealY = Board.canvasConfig.toWorldY(y);
 	}
 
 	draw(evt: MouseEvent | TouchEvent): void {
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
+		Board.clearCanvas();
+		Board.reDraw();
+		Board.ctx.beginPath();
 
 		if (Board.isPerfectShape) {
-			Board.clearCanvas();
-			Board.reDraw();
-			Board.ctx.beginPath();
-
 			Board.ctx.moveTo(
 				this.properties.initialX as number,
 				this.properties.initialY as number
 			);
 
 			Board.ctx.lineTo(x, y);
-
-			Board.ctx.closePath();
 		} else {
-			const coords = [
+			let initialCoords = [this.initialRealX, this.initialRealY];
+
+			this.line.push([
 				Board.canvasConfig.toWorldX(x),
 				Board.canvasConfig.toWorldY(y),
-			];
-			Board.ctx.lineTo(x, y);
-			this.line.push(coords);
+			]);
+
+			let currentPoint = this.line[0];
+
+			for (let i = 1; i < this.line.length; i++) {
+				let midPoint = this.midPoint(initialCoords, currentPoint);
+
+				Board.ctx.quadraticCurveTo(
+					Board.canvasConfig.toScreenX(initialCoords[0]),
+					Board.canvasConfig.toScreenY(initialCoords[1]),
+					Board.canvasConfig.toScreenX(midPoint[0]),
+					Board.canvasConfig.toScreenY(midPoint[1])
+				);
+
+				initialCoords = this.line[i];
+				currentPoint = this.line[i + 1];
+			}
 		}
 
 		Board.ctx.stroke();
+		Board.ctx.closePath();
+	}
+
+	midPoint(p1: number[], p2: number[]) {
+		return [p1[0] + (p2[0] - p1[0]) / 2, p1[1] + (p2[1] - p1[1]) / 2];
 	}
 
 	reDraw(): void {
-		for (let i = 0; i < this.line.length; i++) {
-			Board.ctx.lineTo(
-				Board.canvasConfig.toScreenX(this.line[i][0]),
-				Board.canvasConfig.toScreenY(this.line[i][1])
+		if (this.line.length > 2) {
+			Board.ctx.beginPath();
+
+			let initialCoords = [this.initialRealX, this.initialRealY];
+
+			let currentPoint = this.line[0];
+			Board.ctx.moveTo(
+				Board.canvasConfig.toScreenX(this.initialRealX),
+				Board.canvasConfig.toScreenY(this.initialRealY)
 			);
+
+			for (let i = 1; i < this.line.length; i++) {
+				let midPoint = this.midPoint(initialCoords, currentPoint);
+
+				Board.ctx.quadraticCurveTo(
+					Board.canvasConfig.toScreenX(initialCoords[0]),
+					Board.canvasConfig.toScreenY(initialCoords[1]),
+					Board.canvasConfig.toScreenX(midPoint[0]),
+					Board.canvasConfig.toScreenY(midPoint[1])
+				);
+
+				initialCoords = this.line[i];
+				currentPoint = this.line[i + 1];
+			}
+
+			Board.ctx.stroke();
+			Board.ctx.closePath();
+		} else {
+			for (let i = 0; i < this.line.length; i++) {
+				Board.ctx.lineTo(
+					Board.canvasConfig.toScreenX(this.line[i][0]),
+					Board.canvasConfig.toScreenY(this.line[i][1])
+				);
+			}
+
+			Board.ctx.stroke();
 		}
-		Board.ctx.stroke();
 	}
 
 	endDraw(evt: MouseEvent | TouchEvent): void {
