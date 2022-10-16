@@ -5,7 +5,10 @@ import HandDrawing from './HandDrawing';
 import { Rectangle } from './Rectangle';
 
 export class DrawableFactory {
-	static create(type: DrawableType, properties: DrawableProperties): Drawable {
+	static create(
+		type: DrawableType,
+		properties: DrawableProperties = {}
+	): Drawable {
 		switch (type) {
 			case DrawableType.HandDrawing:
 				return new HandDrawing(properties);
@@ -19,8 +22,8 @@ export class DrawableFactory {
 	}
 }
 
-export const enum DrawableType {
-	HandDrawing,
-	Rectangle,
-	Circle,
+export enum DrawableType {
+	HandDrawing = 'HandDrawing',
+	Rectangle = 'Rectangle',
+	Circle = 'Circle',
 }

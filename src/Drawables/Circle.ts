@@ -1,9 +1,13 @@
 import Board from '../Board';
+import { CanvasConfig } from '../Config/CanvasConfig';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
+import { DrawableType } from './DrawableFactory';
 
 export class Circle implements Drawable {
 	properties: DrawableProperties;
+	type: string = DrawableType.Circle;
+
 	worldCenterX: number;
 	worldCenterY: number;
 	radiusX: number;
@@ -21,7 +25,7 @@ export class Circle implements Drawable {
 	startDraw(evt: MouseEvent | TouchEvent): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
 		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
+			(this.properties.lineWidth as number) * CanvasConfig.scale;
 
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
@@ -60,10 +64,10 @@ export class Circle implements Drawable {
 		currentRadiusX = Math.abs(currentRadiusX);
 		currentRadiusY = Math.abs(currentRadiusY);
 
-		this.worldCenterX = Board.canvasConfig.toWorldX(centerX);
-		this.worldCenterY = Board.canvasConfig.toWorldY(centerY);
-		this.radiusX = currentRadiusX / Board.canvasConfig.scale;
-		this.radiusY = currentRadiusY / Board.canvasConfig.scale;
+		this.worldCenterX = CanvasConfig.toWorldX(centerX);
+		this.worldCenterY = CanvasConfig.toWorldY(centerY);
+		this.radiusX = currentRadiusX / CanvasConfig.scale;
+		this.radiusY = currentRadiusY / CanvasConfig.scale;
 
 		Board.ctx.ellipse(
 			centerX,
@@ -82,13 +86,13 @@ export class Circle implements Drawable {
 	reDraw(): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
 		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
+			(this.properties.lineWidth as number) * CanvasConfig.scale;
 
 		Board.ctx.ellipse(
-			Board.canvasConfig.toScreenX(this.worldCenterX),
-			Board.canvasConfig.toScreenY(this.worldCenterY),
-			this.radiusX * Board.canvasConfig.scale,
-			this.radiusY * Board.canvasConfig.scale,
+			CanvasConfig.toScreenX(this.worldCenterX),
+			CanvasConfig.toScreenY(this.worldCenterY),
+			this.radiusX * CanvasConfig.scale,
+			this.radiusY * CanvasConfig.scale,
 			0,
 			0,
 			2 * Math.PI

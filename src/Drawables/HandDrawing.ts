@@ -1,6 +1,8 @@
 import Board from '../Board';
+import { CanvasConfig } from '../Config/CanvasConfig';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
+import { DrawableType } from './DrawableFactory';
 
 export default class HandDrawing implements Drawable {
 	line: Array<Array<number>>;
@@ -8,6 +10,7 @@ export default class HandDrawing implements Drawable {
 	initialRealY: number;
 
 	properties: DrawableProperties;
+	type: string = DrawableType.HandDrawing;
 
 	constructor(properties: DrawableProperties) {
 		this.line = [];
@@ -24,7 +27,7 @@ export default class HandDrawing implements Drawable {
 	startDraw(evt: MouseEvent | TouchEvent): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
 		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
+			(this.properties.lineWidth as number) * CanvasConfig.scale;
 		Board.ctx.lineCap = 'round';
 		Board.ctx.lineJoin = 'round';
 
@@ -35,8 +38,8 @@ export default class HandDrawing implements Drawable {
 
 		this.properties.initialX = x;
 		this.properties.initialY = y;
-		this.initialRealX = Board.canvasConfig.toWorldX(x);
-		this.initialRealY = Board.canvasConfig.toWorldY(y);
+		this.initialRealX = CanvasConfig.toWorldX(x);
+		this.initialRealY = CanvasConfig.toWorldY(y);
 	}
 
 	draw(evt: MouseEvent | TouchEvent): void {
@@ -56,10 +59,7 @@ export default class HandDrawing implements Drawable {
 		} else {
 			let initialCoords = [this.initialRealX, this.initialRealY];
 
-			this.line.push([
-				Board.canvasConfig.toWorldX(x),
-				Board.canvasConfig.toWorldY(y),
-			]);
+			this.line.push([CanvasConfig.toWorldX(x), CanvasConfig.toWorldY(y)]);
 
 			let currentPoint = this.line[0];
 
@@ -67,10 +67,10 @@ export default class HandDrawing implements Drawable {
 				let midPoint = this.midPoint(initialCoords, currentPoint);
 
 				Board.ctx.quadraticCurveTo(
-					Board.canvasConfig.toScreenX(initialCoords[0]),
-					Board.canvasConfig.toScreenY(initialCoords[1]),
-					Board.canvasConfig.toScreenX(midPoint[0]),
-					Board.canvasConfig.toScreenY(midPoint[1])
+					CanvasConfig.toScreenX(initialCoords[0]),
+					CanvasConfig.toScreenY(initialCoords[1]),
+					CanvasConfig.toScreenX(midPoint[0]),
+					CanvasConfig.toScreenY(midPoint[1])
 				);
 
 				initialCoords = this.line[i];
@@ -94,18 +94,18 @@ export default class HandDrawing implements Drawable {
 
 			let currentPoint = this.line[0];
 			Board.ctx.moveTo(
-				Board.canvasConfig.toScreenX(this.initialRealX),
-				Board.canvasConfig.toScreenY(this.initialRealY)
+				CanvasConfig.toScreenX(this.initialRealX),
+				CanvasConfig.toScreenY(this.initialRealY)
 			);
 
 			for (let i = 1; i < this.line.length; i++) {
 				let midPoint = this.midPoint(initialCoords, currentPoint);
 
 				Board.ctx.quadraticCurveTo(
-					Board.canvasConfig.toScreenX(initialCoords[0]),
-					Board.canvasConfig.toScreenY(initialCoords[1]),
-					Board.canvasConfig.toScreenX(midPoint[0]),
-					Board.canvasConfig.toScreenY(midPoint[1])
+					CanvasConfig.toScreenX(initialCoords[0]),
+					CanvasConfig.toScreenY(initialCoords[1]),
+					CanvasConfig.toScreenX(midPoint[0]),
+					CanvasConfig.toScreenY(midPoint[1])
 				);
 
 				initialCoords = this.line[i];
@@ -117,8 +117,8 @@ export default class HandDrawing implements Drawable {
 		} else {
 			for (let i = 0; i < this.line.length; i++) {
 				Board.ctx.lineTo(
-					Board.canvasConfig.toScreenX(this.line[i][0]),
-					Board.canvasConfig.toScreenY(this.line[i][1])
+					CanvasConfig.toScreenX(this.line[i][0]),
+					CanvasConfig.toScreenY(this.line[i][1])
 				);
 			}
 
@@ -135,14 +135,11 @@ export default class HandDrawing implements Drawable {
 
 			this.line = [];
 
-			const coords = [
-				Board.canvasConfig.toWorldX(x),
-				Board.canvasConfig.toWorldY(y),
-			];
+			const coords = [CanvasConfig.toWorldX(x), CanvasConfig.toWorldY(y)];
 
 			this.line.push([
-				Board.canvasConfig.toWorldX(this.properties.initialX as number),
-				Board.canvasConfig.toWorldY(this.properties.initialY as number),
+				CanvasConfig.toWorldX(this.properties.initialX as number),
+				CanvasConfig.toWorldY(this.properties.initialY as number),
 			]);
 			this.line.push(coords);
 		}

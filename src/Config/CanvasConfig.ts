@@ -1,53 +1,37 @@
 import Board from '../Board';
 
-export default class canvasConfig {
-	offsetX: number;
-	offsetY: number;
-	cursorX: number;
-	cursorY: number;
-	prevCursorX: number;
-	prevCursorY: number;
-	scale: number;
+export class CanvasConfig {
+	static offsetX: number = 0;
+	static offsetY: number = 0;
+	static cursorX: number = 0;
+	static cursorY: number = 0;
+	static prevCursorX: number = 0;
+	static prevCursorY: number = 0;
+	static scale: number = 1;
 
-	prevTouches: Touch[] | null[] = [null, null];
+	static prevTouches: Touch[] | null[] = [null, null];
 
-	private static _instance: canvasConfig;
-
-	constructor() {
-		this.offsetX = 0;
-		this.offsetY = 0;
-		this.cursorX = 0;
-		this.cursorY = 0;
-		this.prevCursorX = 0;
-		this.prevCursorY = 0;
-		this.scale = 1;
-	}
-
-	public static get getInstance() {
-		return this._instance || (this._instance = new this());
-	}
-
-	toScreenX(x: number) {
+	static toScreenX(x: number) {
 		return (x + this.offsetX) * this.scale;
 	}
 
-	toScreenY(y: number) {
+	static toScreenY(y: number) {
 		return (y + this.offsetY) * this.scale;
 	}
 
-	toWorldX(x: number) {
+	static toWorldX(x: number) {
 		return x / this.scale - this.offsetX;
 	}
 
-	toWorldY(y: number) {
+	static toWorldY(y: number) {
 		return y / this.scale - this.offsetY;
 	}
 
-	getWidth() {
+	static getWidth() {
 		return Board.canvas.clientWidth / this.scale;
 	}
 
-	getHeight() {
+	static getHeight() {
 		return Board.canvas.clientHeight / this.scale;
 	}
 }

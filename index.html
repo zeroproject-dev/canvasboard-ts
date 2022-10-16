@@ -11,7 +11,7 @@
 <body>
   <div class="configbar">
     <div id="drawables">
-      <button class="button" data-type="pen">
+      <button class="button" data-type="HandDrawing">
         <svg class="icon" width="120" height="120" viewBox="0 0 120 120" version="1.1" id="svg5"
           inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)" sodipodi:docname="pen.svg"
           xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -59,7 +59,7 @@
           </g>
         </svg>
       </button>
-      <button class="button" data-type="rectangle">
+      <button class="button" data-type="Rectangle">
         <svg class="icon" width="120" height="120" viewBox="0 0 120 120" version="1.1" id="svg5"
           inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)" sodipodi:docname="rectangle.svg"
           xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -86,7 +86,7 @@
           </g>
         </svg>
       </button>
-      <button class="button" data-type="circle">
+      <button class="button" data-type="Circle">
         O
       </button>
     </div>
@@ -94,7 +94,7 @@
       <input class="input" type="color" id="color" value="#000000" />
       <label class="label">
         <input class="input" type="range" id="size" min="1" max="50" value="10" />
-        <span>10</span>
+        <input type="text" pattern="[0-9]{2}" class="input" value="10" />
       </label>
     </div>
     <div class="actions">

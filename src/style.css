@@ -58,13 +58,29 @@ body {
 	font-weight: normal;
 }
 
+.selected_draw {
+	background-color: #e2e2e2;
+}
+
 .button:hover {
-	background-color: #eee;
+	background-color: #e2e2e2;
 }
 
 .input {
 	display: block;
 	width: 100%;
+}
+
+.input[type='range'] + .input {
+	width: 18px;
+	padding: 0;
+	border: none;
+	text-align: center;
+	background-color: transparent;
+}
+
+.input[type='range'] + .input:focus {
+	outline: none;
 }
 
 .label {

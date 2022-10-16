@@ -1,9 +1,13 @@
 import Board from '../Board';
+import { CanvasConfig } from '../Config/CanvasConfig';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
+import { DrawableType } from './DrawableFactory';
 
 export class Rectangle implements Drawable {
 	properties: DrawableProperties;
+	type: string = DrawableType.Rectangle;
+
 	initialRealX: number;
 	initialRealY: number;
 	width: number;
@@ -20,15 +24,15 @@ export class Rectangle implements Drawable {
 	startDraw(evt: MouseEvent | TouchEvent): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
 		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
+			(this.properties.lineWidth as number) * CanvasConfig.scale;
 
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
 
 		this.properties.initialX = x;
 		this.properties.initialY = y;
-		this.initialRealX = Board.canvasConfig.toWorldX(x);
-		this.initialRealY = Board.canvasConfig.toWorldY(y);
+		this.initialRealX = CanvasConfig.toWorldX(x);
+		this.initialRealY = CanvasConfig.toWorldY(y);
 	}
 
 	draw(evt: MouseEvent | TouchEvent): void {
@@ -52,8 +56,8 @@ export class Rectangle implements Drawable {
 			displayHeight = size * heightSign;
 		}
 
-		this.width = displayWidth / Board.canvasConfig.scale;
-		this.height = displayHeight / Board.canvasConfig.scale;
+		this.width = displayWidth / CanvasConfig.scale;
+		this.height = displayHeight / CanvasConfig.scale;
 
 		Board.ctx.rect(
 			this.properties.initialX as number,
@@ -69,12 +73,12 @@ export class Rectangle implements Drawable {
 	reDraw(): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
 		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * Board.canvasConfig.scale;
+			(this.properties.lineWidth as number) * CanvasConfig.scale;
 		Board.ctx.rect(
-			Board.canvasConfig.toScreenX(this.initialRealX),
-			Board.canvasConfig.toScreenY(this.initialRealY),
-			this.width * Board.canvasConfig.scale,
-			this.height * Board.canvasConfig.scale
+			CanvasConfig.toScreenX(this.initialRealX),
+			CanvasConfig.toScreenY(this.initialRealY),
+			this.width * CanvasConfig.scale,
+			this.height * CanvasConfig.scale
 		);
 		Board.ctx.stroke();
 	}
