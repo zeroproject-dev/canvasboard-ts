@@ -1,37 +1,35 @@
 import Board from '../Board';
+import { Config } from './Config';
 
 export class CanvasConfig {
-	static offsetX: number = 0;
-	static offsetY: number = 0;
 	static cursorX: number = 0;
 	static cursorY: number = 0;
 	static prevCursorX: number = 0;
 	static prevCursorY: number = 0;
-	static scale: number = 1;
 
 	static prevTouches: Touch[] | null[] = [null, null];
 
 	static toScreenX(x: number) {
-		return (x + this.offsetX) * this.scale;
+		return (x + Config.offsetX) * Config.scale;
 	}
 
 	static toScreenY(y: number) {
-		return (y + this.offsetY) * this.scale;
+		return (y + Config.offsetY) * Config.scale;
 	}
 
 	static toWorldX(x: number) {
-		return x / this.scale - this.offsetX;
+		return x / Config.scale - Config.offsetX;
 	}
 
 	static toWorldY(y: number) {
-		return y / this.scale - this.offsetY;
+		return y / Config.scale - Config.offsetY;
 	}
 
 	static getWidth() {
-		return Board.canvas.clientWidth / this.scale;
+		return Board.canvas.clientWidth / Config.scale;
 	}
 
 	static getHeight() {
-		return Board.canvas.clientHeight / this.scale;
+		return Board.canvas.clientHeight / Config.scale;
 	}
 }

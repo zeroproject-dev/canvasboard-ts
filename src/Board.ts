@@ -67,8 +67,9 @@ export default class Board extends BoardEvents {
 
 		Board.history.forEach((draw: Drawable) => {
 			Board.ctx.strokeStyle = draw.properties.strokeColor as string;
+			Board.ctx.fillStyle = draw.properties.strokeColor as string;
 			Board.ctx.lineWidth =
-				(draw.properties.lineWidth as number) * CanvasConfig.scale;
+				(draw.properties.lineWidth as number) * Config.scale;
 			Board.ctx.moveTo(
 				draw.properties.initialX as number,
 				draw.properties.initialY as number
@@ -80,7 +81,7 @@ export default class Board extends BoardEvents {
 		});
 
 		Board.ctx.strokeStyle = Config.strokeColor;
-		Board.ctx.lineWidth = Config.lineWidth * CanvasConfig.scale;
+		Board.ctx.lineWidth = Config.lineWidth * Config.scale;
 	}
 
 	draw(evt: MouseEvent | TouchEvent) {
@@ -134,10 +135,10 @@ export default class Board extends BoardEvents {
 		this.draw(evt);
 
 		if (this.isDragging) {
-			CanvasConfig.offsetX +=
-				(CanvasConfig.cursorX - CanvasConfig.prevCursorX) / CanvasConfig.scale;
-			CanvasConfig.offsetY +=
-				(CanvasConfig.cursorY - CanvasConfig.prevCursorY) / CanvasConfig.scale;
+			Config.offsetX +=
+				(CanvasConfig.cursorX - CanvasConfig.prevCursorX) / Config.scale;
+			Config.offsetY +=
+				(CanvasConfig.cursorY - CanvasConfig.prevCursorY) / Config.scale;
 
 			Board.reDraw();
 		}
@@ -162,11 +163,11 @@ export default class Board extends BoardEvents {
 
 		const deltaY = evt.deltaY;
 		const scaleAmount = -deltaY / 500;
-		const newScale = CanvasConfig.scale * (1 + scaleAmount);
+		const newScale = Config.scale * (1 + scaleAmount);
 
 		if (newScale < 0.1 || newScale > 10) return;
 
-		CanvasConfig.scale = newScale;
+		Config.scale = newScale;
 
 		var distX = evt.pageX / Board.canvas.clientWidth;
 		var distY = evt.pageY / Board.canvas.clientHeight;
@@ -177,8 +178,8 @@ export default class Board extends BoardEvents {
 		const unitsAddLeft = unitsZoomedX * distX;
 		const unitsAddTop = unitsZoomedY * distY;
 
-		CanvasConfig.offsetX -= unitsAddLeft;
-		CanvasConfig.offsetY -= unitsAddTop;
+		Config.offsetX -= unitsAddLeft;
+		Config.offsetY -= unitsAddTop;
 
 		Board.reDraw();
 	}
@@ -237,17 +238,17 @@ export default class Board extends BoardEvents {
 			);
 
 			var zoomAmount = hypot / prevHypot;
-			const newScale = CanvasConfig.scale * zoomAmount;
+			const newScale = Config.scale * zoomAmount;
 
 			if (newScale < 0.1 || newScale > 10) return;
-			CanvasConfig.scale = newScale;
+			Config.scale = newScale;
 			const scaleAmount = 1 - zoomAmount;
 
 			const panX = midX - prevMidX;
 			const panY = midY - prevMidY;
 
-			CanvasConfig.offsetX += panX / CanvasConfig.scale;
-			CanvasConfig.offsetY += panY / CanvasConfig.scale;
+			Config.offsetX += panX / Config.scale;
+			Config.offsetY += panY / Config.scale;
 
 			var zoomRatioX = midX / Board.canvas.clientWidth;
 			var zoomRatioY = midY / Board.canvas.clientHeight;
@@ -258,8 +259,8 @@ export default class Board extends BoardEvents {
 			const unitsAddLeft = unitsZoomedX * zoomRatioX;
 			const unitsAddTop = unitsZoomedY * zoomRatioY;
 
-			CanvasConfig.offsetX += unitsAddLeft;
-			CanvasConfig.offsetY += unitsAddTop;
+			Config.offsetX += unitsAddLeft;
+			Config.offsetY += unitsAddTop;
 
 			Board.reDraw();
 		}
@@ -299,6 +300,7 @@ export default class Board extends BoardEvents {
 		this.currentDraw = DrawableFactory.create(Config.currentDrawable, {
 			strokeColor: Config.strokeColor,
 			lineWidth: Config.lineWidth,
+			fillColor: Config.fillColor,
 		});
 	}
 

@@ -1,5 +1,6 @@
 import Board from '../Board';
 import { CanvasConfig } from '../Config/CanvasConfig';
+import { Config } from '../Config/Config';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
 import { DrawableType } from './DrawableFactory';
@@ -23,11 +24,13 @@ export class Rectangle implements Drawable {
 
 	startDraw(evt: MouseEvent | TouchEvent): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * CanvasConfig.scale;
+		Board.ctx.fillStyle = this.properties.fillColor as string;
+		Board.ctx.lineWidth = (this.properties.lineWidth as number) * Config.scale;
 
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
+
+		this.properties.fill = Config.fill;
 
 		this.properties.initialX = x;
 		this.properties.initialY = y;
@@ -56,15 +59,24 @@ export class Rectangle implements Drawable {
 			displayHeight = size * heightSign;
 		}
 
-		this.width = displayWidth / CanvasConfig.scale;
-		this.height = displayHeight / CanvasConfig.scale;
+		this.width = displayWidth / Config.scale;
+		this.height = displayHeight / Config.scale;
 
-		Board.ctx.rect(
-			this.properties.initialX as number,
-			this.properties.initialY as number,
-			displayWidth,
-			displayHeight
-		);
+		if (this.properties.fill) {
+			Board.ctx.fillRect(
+				this.properties.initialX as number,
+				this.properties.initialY as number,
+				displayWidth,
+				displayHeight
+			);
+		} else {
+			Board.ctx.rect(
+				this.properties.initialX as number,
+				this.properties.initialY as number,
+				displayWidth,
+				displayHeight
+			);
+		}
 
 		Board.ctx.stroke();
 		Board.ctx.closePath();
@@ -72,14 +84,22 @@ export class Rectangle implements Drawable {
 
 	reDraw(): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * CanvasConfig.scale;
-		Board.ctx.rect(
-			CanvasConfig.toScreenX(this.initialRealX),
-			CanvasConfig.toScreenY(this.initialRealY),
-			this.width * CanvasConfig.scale,
-			this.height * CanvasConfig.scale
-		);
+		Board.ctx.lineWidth = (this.properties.lineWidth as number) * Config.scale;
+		if (this.properties.fill) {
+			Board.ctx.fillRect(
+				CanvasConfig.toScreenX(this.initialRealX),
+				CanvasConfig.toScreenY(this.initialRealY),
+				this.width * Config.scale,
+				this.height * Config.scale
+			);
+		} else {
+			Board.ctx.rect(
+				CanvasConfig.toScreenX(this.initialRealX),
+				CanvasConfig.toScreenY(this.initialRealY),
+				this.width * Config.scale,
+				this.height * Config.scale
+			);
+		}
 		Board.ctx.stroke();
 	}
 

@@ -11,7 +11,7 @@
 <body>
   <div class="configbar">
     <div id="drawables">
-      <button class="button" data-type="HandDrawing">
+      <button class="button" title="Pen" data-type="HandDrawing">
         <svg class="icon" width="120" height="120" viewBox="0 0 120 120" version="1.1" id="svg5"
           inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)" sodipodi:docname="pen.svg"
           xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -59,7 +59,7 @@
           </g>
         </svg>
       </button>
-      <button class="button" data-type="Rectangle">
+      <button class="button" title="Rectangle" data-type="Rectangle">
         <svg class="icon" width="120" height="120" viewBox="0 0 120 120" version="1.1" id="svg5"
           inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)" sodipodi:docname="rectangle.svg"
           xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -86,9 +86,13 @@
           </g>
         </svg>
       </button>
-      <button class="button" data-type="Circle">
+      <button class="button" title="Circle" data-type="Circle">
         O
       </button>
+      <label>
+        <input type="checkbox" id="fill" />
+        Fill
+      </label>
     </div>
     <div class="config_shapes">
       <input class="input" type="color" id="color" value="#000000" />
@@ -99,99 +103,28 @@
     </div>
     <div class="actions">
       <button class="input button" id="clear">Clear</button>
+      <button class="input button" id="reset">Reset</button>
       <button class="input button" id="undo">
-        <svg class="icon" width="120" height="120" viewBox="0 0 120 120" version="1.1" id="svg5"
-          inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)" sodipodi:docname="undo.svg"
-          xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-          xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg"
-          xmlns:svg="http://www.w3.org/2000/svg">
-          <sodipodi:namedview id="namedview7" pagecolor="#ffffff" bordercolor="#999999" borderopacity="1"
-            inkscape:showpageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="0"
-            inkscape:deskcolor="#d1d1d1" inkscape:document-units="px" showgrid="false" inkscape:lockguides="true"
-            showguides="true" inkscape:zoom="5.6568543" inkscape:cx="49.232309" inkscape:cy="57.452426"
-            inkscape:window-width="1920" inkscape:window-height="1057" inkscape:window-x="-8" inkscape:window-y="-8"
-            inkscape:window-maximized="1" inkscape:current-layer="layer1">
-            <sodipodi:guide position="54.181956,112.45323" orientation="0,-1" id="guide952" inkscape:locked="true" />
-            <sodipodi:guide position="55.730012,7.5724407" orientation="0,-1" id="guide954" inkscape:locked="true" />
-            <sodipodi:guide position="31.348132,104.90646" orientation="0,-1" id="guide958" inkscape:locked="true" />
-            <sodipodi:guide position="50.698831,14.732199" orientation="0,-1" id="guide960" inkscape:locked="true" />
-            <sodipodi:guide position="113.00808,67.3661" orientation="1,0" id="guide962" inkscape:locked="true" />
-            <sodipodi:guide position="7.3532655,70.075197" orientation="1,0" id="guide964" inkscape:locked="true" />
-            <sodipodi:guide position="53.740115,60.956584" orientation="0,-1" id="guide14085" inkscape:locked="true" />
-            <sodipodi:guide position="59.750523,41.687924" orientation="1,0" id="guide14089" inkscape:locked="true" />
-          </sodipodi:namedview>
-          <defs id="defs2">
-            <clipPath clipPathUnits="userSpaceOnUse" id="clipPath8775">
-              <g inkscape:label="Clip" id="use8777">
-                <path
-                  style="fill:none;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
-                  id="path9521" sodipodi:type="arc" sodipodi:cx="113.87886" sodipodi:cy="9.9656105"
-                  sodipodi:rx="20.802002" sodipodi:ry="19.060438" sodipodi:start="0" sodipodi:end="6.2801033"
-                  sodipodi:arc-type="arc"
-                  d="M 134.68086,9.9656105 A 20.802002,19.060438 0 0 1 113.89489,29.026043 20.802002,19.060438 0 0 1 93.076883,9.9949827 20.802002,19.060438 0 0 1 113.83078,-9.0947767 20.802002,19.060438 0 0 1 134.68076,9.9068662"
-                  sodipodi:open="true" />
-              </g>
-            </clipPath>
-          </defs>
-          <g inkscape:label="Capa 1" inkscape:groupmode="layer" id="layer1">
-            <g id="g14896" transform="translate(2.6516504)">
-              <path id="path13355"
-                style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:3.32521;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-                d="m 13.602301,59.878646 a 46.329666,39.335476 0 0 1 -0.0047,-0.558559 46.329666,39.335476 0 0 1 46.329666,-39.335475 46.329666,39.335476 0 0 1 46.329664,39.335475 v 0 a 46.329666,39.335476 0 0 1 -46.329664,39.335476 46.329666,39.335476 0 0 1 -1.545907,-0.0219" />
-              <path sodipodi:type="star"
-                style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-                id="path14148" inkscape:flatsided="false" sodipodi:sides="3" sodipodi:cx="4.0658641"
-                sodipodi:cy="49.320698" sodipodi:r1="5.8443346" sodipodi:r2="2.9221673" sodipodi:arg1="1.5707963"
-                sodipodi:arg2="2.6179939" inkscape:rounded="0" inkscape:randomized="0"
-                d="m 4.0658642,55.165032 -2.5306713,-4.383251 -2.53067113,-4.38325 5.06134243,-10e-7 5.061342,0 -2.530671,4.383251 z"
-                inkscape:transform-center-y="1.4610837" transform="translate(10.076272,13.965359)" />
+        <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M5.33936 4.46777H7.33936V7.02487C8.52937 6.08978 10.03 5.53207 11.6608 5.53207C15.5268 5.53207 18.6608 8.66608 18.6608 12.5321C18.6608 16.3981 15.5268 19.5321 11.6608 19.5321C9.51031 19.5321 7.58632 18.5623 6.30225 17.0363L7.92157 15.8515C8.83747 16.8825 10.1733 17.5321 11.6608 17.5321C14.4222 17.5321 16.6608 15.2935 16.6608 12.5321C16.6608 9.77065 14.4222 7.53207 11.6608 7.53207C10.574 7.53207 9.56811 7.87884 8.74785 8.46777L11.3394 8.46777V10.4678H5.33936V4.46777Z"
+            fill="black" />
+        </svg> </button>
+      <a id="download" class="button">
+        <svg version="1.1" class="icon" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 489 489"
+          style="enable-background:new 0 0 489 489;" xml:space="preserve">
+          <g>
+            <g>
+              <path d="M329.2,327.2c-4.5,0-8.1,3.4-8.6,7.9c-3.9,38.6-36.5,68.7-76.2,68.7c-39.6,0-72.2-30.1-76.2-68.7
+			c-0.5-4.4-4.1-7.9-8.6-7.9h-104c-21.8,0-39.5,17.7-39.5,39.5v82.8c0,21.8,17.7,39.5,39.5,39.5h377.8c21.8,0,39.5-17.7,39.5-39.5
+			v-82.7c0-21.8-17.7-39.5-39.5-39.5H329.2V327.2z" />
+              <path d="M303.5,198.6l-30.9,30.9V28.1C272.6,12.6,260,0,244.5,0l0,0c-15.5,0-28.1,12.6-28.1,28.1v201.4l-30.9-30.9
+			c-9.5-9.5-24.7-11.9-35.9-4.4c-15.3,10.2-16.8,31.1-4.5,43.4l82.8,82.8c9.2,9.2,24.1,9.2,33.3,0l82.8-82.8
+			c12.3-12.3,10.8-33.2-4.5-43.4C328.2,186.6,313,189,303.5,198.6z" />
             </g>
           </g>
-        </svg>
-      </button>
-      <a id="download" class="button">
-        <svg class="icon" width="120" height="120" viewBox="0 0 120 120" version="1.1" id="svg5"
-          inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)" sodipodi:docname="save.svg"
-          xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-          xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg"
-          xmlns:svg="http://www.w3.org/2000/svg">
-          <sodipodi:namedview id="namedview7" pagecolor="#ffffff" bordercolor="#999999" borderopacity="1"
-            inkscape:showpageshadow="0" inkscape:pageopacity="0" inkscape:pagecheckerboard="0"
-            inkscape:deskcolor="#d1d1d1" inkscape:document-units="px" showgrid="false" inkscape:lockguides="true"
-            showguides="true" inkscape:zoom="5.6568543" inkscape:cx="49.232309" inkscape:cy="57.452426"
-            inkscape:window-width="1920" inkscape:window-height="1057" inkscape:window-x="-8" inkscape:window-y="-8"
-            inkscape:window-maximized="1" inkscape:current-layer="layer1">
-            <sodipodi:guide position="54.181956,112.45323" orientation="0,-1" id="guide952" inkscape:locked="true" />
-            <sodipodi:guide position="55.730012,7.5724407" orientation="0,-1" id="guide954" inkscape:locked="true" />
-            <sodipodi:guide position="31.348132,104.90646" orientation="0,-1" id="guide958" inkscape:locked="true" />
-            <sodipodi:guide position="50.698831,14.732199" orientation="0,-1" id="guide960" inkscape:locked="true" />
-            <sodipodi:guide position="113.00808,67.3661" orientation="1,0" id="guide962" inkscape:locked="true" />
-            <sodipodi:guide position="7.3532655,70.075197" orientation="1,0" id="guide964" inkscape:locked="true" />
-          </sodipodi:namedview>
-          <defs id="defs2">
-            <clipPath clipPathUnits="userSpaceOnUse" id="clipPath8775">
-              <g inkscape:label="Clip" id="use8777">
-                <path
-                  style="fill:none;fill-opacity:0;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
-                  id="path9521" sodipodi:type="arc" sodipodi:cx="113.87886" sodipodi:cy="9.9656105"
-                  sodipodi:rx="20.802002" sodipodi:ry="19.060438" sodipodi:start="0" sodipodi:end="6.2801033"
-                  sodipodi:arc-type="arc"
-                  d="M 134.68086,9.9656105 A 20.802002,19.060438 0 0 1 113.89489,29.026043 20.802002,19.060438 0 0 1 93.076883,9.9949827 20.802002,19.060438 0 0 1 113.83078,-9.0947767 20.802002,19.060438 0 0 1 134.68076,9.9068662"
-                  sodipodi:open="true" />
-              </g>
-            </clipPath>
-          </defs>
-          <g inkscape:label="Capa 1" inkscape:groupmode="layer" id="layer1">
-            <path id="rect12574"
-              style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2.95852;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-              d="M 76.951172 16.515625 L 8.7285156 16.603516 L 8.7285156 103.77148 L 111.64648 103.77148 L 111.46875 42.816406 L 76.773438 42.726562 L 76.951172 16.515625 z " />
-            <path
-              style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-              d="M 111.351,42.740208 C 92.944252,28.120058 77.015279,16.572815 77.015279,16.572815" id="path12582"
-              sodipodi:nodetypes="cc" />
-          </g>
-        </svg>
-      </a>
+        </svg> </a>
     </div>
   </div>
   <canvas id="canvas" class="canvas"></canvas>

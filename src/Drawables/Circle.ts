@@ -1,5 +1,6 @@
 import Board from '../Board';
 import { CanvasConfig } from '../Config/CanvasConfig';
+import { Config } from '../Config/Config';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
 import { DrawableType } from './DrawableFactory';
@@ -24,11 +25,13 @@ export class Circle implements Drawable {
 
 	startDraw(evt: MouseEvent | TouchEvent): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * CanvasConfig.scale;
+		Board.ctx.fillStyle = this.properties.fillColor as string;
+		Board.ctx.lineWidth = (this.properties.lineWidth as number) * Config.scale;
 
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
+
+		this.properties.fill = Config.fill;
 
 		this.properties.initialX = x;
 		this.properties.initialY = y;
@@ -66,8 +69,8 @@ export class Circle implements Drawable {
 
 		this.worldCenterX = CanvasConfig.toWorldX(centerX);
 		this.worldCenterY = CanvasConfig.toWorldY(centerY);
-		this.radiusX = currentRadiusX / CanvasConfig.scale;
-		this.radiusY = currentRadiusY / CanvasConfig.scale;
+		this.radiusX = currentRadiusX / Config.scale;
+		this.radiusY = currentRadiusY / Config.scale;
 
 		Board.ctx.ellipse(
 			centerX,
@@ -79,26 +82,27 @@ export class Circle implements Drawable {
 			2 * Math.PI
 		);
 
-		Board.ctx.stroke();
+		if (this.properties.fill) Board.ctx.fill();
+		else Board.ctx.stroke();
 		Board.ctx.closePath();
 	}
 
 	reDraw(): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * CanvasConfig.scale;
+		Board.ctx.lineWidth = (this.properties.lineWidth as number) * Config.scale;
 
 		Board.ctx.ellipse(
 			CanvasConfig.toScreenX(this.worldCenterX),
 			CanvasConfig.toScreenY(this.worldCenterY),
-			this.radiusX * CanvasConfig.scale,
-			this.radiusY * CanvasConfig.scale,
+			this.radiusX * Config.scale,
+			this.radiusY * Config.scale,
 			0,
 			0,
 			2 * Math.PI
 		);
 
-		Board.ctx.stroke();
+		if (this.properties.fill) Board.ctx.fill();
+		else Board.ctx.stroke();
 	}
 
 	cancelDraw(): void {

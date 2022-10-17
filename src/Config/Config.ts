@@ -6,6 +6,7 @@ const $colorStroke = document.getElementById('color') as HTMLInputElement;
 const $lineWidth = document.getElementById('size') as HTMLInputElement;
 const $lineWidthNumber = $lineWidth.nextElementSibling as HTMLInputElement;
 const $drawablesUI = document.getElementById('drawables') as HTMLDivElement;
+const $fill = document.getElementById('fill') as HTMLInputElement;
 
 const getAncestorByTagName = (
 	element: HTMLElement,
@@ -46,7 +47,11 @@ const ConfigObject = {
 	strokeColor: '#000000',
 	lineWidth: 10,
 	fillColor: '#000000',
+	fill: false,
 	currentDrawable: 'HandDrawing' as DrawableType,
+	offsetX: 0,
+	offsetY: 0,
+	scale: 1,
 };
 
 export const Config = new Proxy(ConfigObject, {
@@ -55,6 +60,11 @@ export const Config = new Proxy(ConfigObject, {
 	},
 	set: (target, key, value) => {
 		switch (key) {
+			case 'offsetX':
+			case 'offsetY':
+			case 'scale':
+				target[key] = value;
+				break;
 			case 'strokeColor':
 				target.strokeColor = value;
 				$colorStroke.value = value;
@@ -63,16 +73,16 @@ export const Config = new Proxy(ConfigObject, {
 			case 'lineWidth':
 				target.lineWidth = value;
 				$lineWidth.value = value;
-
 				$lineWidthNumber.value = value;
-
 				Board.ctx.lineWidth = value;
 				break;
 			case 'fillColor':
 				target.fillColor = value;
 				Board.ctx.fillStyle = value;
 				break;
-
+			case 'fill':
+				target.fill = value;
+				break;
 			case 'currentDrawable':
 				target.currentDrawable = value;
 				toggleSelectedDraw();
@@ -135,12 +145,27 @@ export const initializeConfig = () => {
 
 	$colorStroke.addEventListener('change', ({ target }: Event) => {
 		Config.strokeColor = (target as HTMLInputElement).value;
+		Config.fillColor = (target as HTMLInputElement).value;
+	});
+
+	$fill.addEventListener('change', ({ target }: Event) => {
+		Config.fill = (target as HTMLInputElement).checked;
 	});
 
 	(document.getElementById('clear') as HTMLButtonElement).addEventListener(
 		'click',
 		() => {
 			Board.clearBoard();
+		}
+	);
+
+	(document.getElementById('reset') as HTMLButtonElement).addEventListener(
+		'click',
+		() => {
+			Config.offsetX = 0;
+			Config.offsetY = 0;
+			Config.scale = 1;
+			Board.reDraw();
 		}
 	);
 

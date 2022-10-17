@@ -1,5 +1,6 @@
 import Board from '../Board';
 import { CanvasConfig } from '../Config/CanvasConfig';
+import { Config } from '../Config/Config';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
 import { DrawableType } from './DrawableFactory';
@@ -26,10 +27,7 @@ export default class HandDrawing implements Drawable {
 
 	startDraw(evt: MouseEvent | TouchEvent): void {
 		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.lineWidth =
-			(this.properties.lineWidth as number) * CanvasConfig.scale;
-		Board.ctx.lineCap = 'round';
-		Board.ctx.lineJoin = 'round';
+		Board.ctx.lineWidth = (this.properties.lineWidth as number) * Config.scale;
 
 		Board.ctx.beginPath();
 
