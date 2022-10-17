@@ -82,6 +82,7 @@ export const Config = new Proxy(ConfigObject, {
 				break;
 			case 'fill':
 				target.fill = value;
+				$fill.checked = value;
 				break;
 			case 'currentDrawable':
 				target.currentDrawable = value;
