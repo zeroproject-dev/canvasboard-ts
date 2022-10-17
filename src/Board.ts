@@ -84,6 +84,17 @@ export default class Board extends BoardEvents {
 		Board.ctx.lineWidth = Config.lineWidth * Config.scale;
 	}
 
+	startDraw(evt: TouchEvent | MouseEvent) {
+		if (this.isDrawing) {
+			Board.ctx.strokeStyle = Config.strokeColor as string;
+			Board.ctx.fillStyle = Config.fillColor as string;
+			Board.ctx.lineWidth = (Config.lineWidth as number) * Config.scale;
+
+			this.createDrawable();
+			this.currentDraw?.startDraw(evt);
+		}
+	}
+
 	draw(evt: MouseEvent | TouchEvent) {
 		if (this.isDrawing) {
 			clearTimeout(this.timer);
@@ -122,10 +133,7 @@ export default class Board extends BoardEvents {
 		CanvasConfig.prevCursorX = evt.pageX;
 		CanvasConfig.prevCursorY = evt.pageY;
 
-		if (this.isDrawing) {
-			this.createDrawable();
-			this.currentDraw?.startDraw(evt);
-		}
+		this.startDraw(evt);
 	}
 
 	onMouseMove(evt: MouseEvent) {
@@ -191,9 +199,7 @@ export default class Board extends BoardEvents {
 		CanvasConfig.prevTouches[0] = evt.touches[0];
 		CanvasConfig.prevTouches[1] = evt.touches[1];
 
-		this.createDrawable();
-
-		this.currentDraw?.startDraw(evt);
+		this.startDraw(evt);
 	}
 
 	onTouchMove(evt: TouchEvent) {

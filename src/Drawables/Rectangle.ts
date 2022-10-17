@@ -23,10 +23,6 @@ export class Rectangle implements Drawable {
 	}
 
 	startDraw(evt: MouseEvent | TouchEvent): void {
-		Board.ctx.strokeStyle = this.properties.strokeColor as string;
-		Board.ctx.fillStyle = this.properties.fillColor as string;
-		Board.ctx.lineWidth = (this.properties.lineWidth as number) * Config.scale;
-
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
 
@@ -42,6 +38,9 @@ export class Rectangle implements Drawable {
 		Board.clearCanvas();
 		Board.reDraw();
 		Board.ctx.beginPath();
+		Board.ctx.strokeStyle = this.properties.strokeColor as string;
+		Board.ctx.fillStyle = this.properties.fillColor as string;
+		Board.ctx.lineWidth = (this.properties.lineWidth as number) * Config.scale;
 
 		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
 		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
