@@ -58,6 +58,7 @@ export default class Board extends BoardEvents {
 	onResize() {
 		Board.canvas.width = document.body.clientWidth;
 		Board.canvas.height = document.body.clientHeight;
+		Board.clearCanvas();
 		Board.reDraw();
 	}
 
