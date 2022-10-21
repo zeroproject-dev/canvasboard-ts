@@ -71,6 +71,11 @@ body {
 	width: 100%;
 }
 
+.input[type='color'] {
+	width: 50px;
+	height: 20px;
+}
+
 .input[type='range'] + .input {
 	width: 18px;
 	padding: 0;
@@ -114,6 +119,11 @@ body {
 	.actions {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
+		gap: 5px;
+	}
+
+	.lbl_color {
+		display: flex;
 		gap: 5px;
 	}
 }

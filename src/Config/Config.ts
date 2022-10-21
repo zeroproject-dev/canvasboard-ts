@@ -50,9 +50,9 @@ export const saveHistory = (): void => {
 };
 
 const ConfigObject = {
-	strokeColor: '#000000',
-	fillColor: '#000000',
-	canvasColor: '#eeeeee',
+	strokeColor: '#f4f4f4',
+	fillColor: '#f4f4f4',
+	canvasColor: '#1e1e1e',
 	lineWidth: 10,
 	fill: false,
 	currentDrawable: 'HandDrawing' as DrawableType,
