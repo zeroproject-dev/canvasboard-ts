@@ -67,7 +67,7 @@ export default class Board extends BoardEvents {
 
 		Board.history.forEach((draw: Drawable) => {
 			Board.ctx.strokeStyle = draw.properties.strokeColor as string;
-			Board.ctx.fillStyle = draw.properties.strokeColor as string;
+			Board.ctx.fillStyle = draw.properties.fillColor as string;
 			Board.ctx.lineWidth =
 				(draw.properties.lineWidth as number) * Config.scale;
 			Board.ctx.moveTo(
@@ -311,7 +311,7 @@ export default class Board extends BoardEvents {
 	}
 
 	static clearCanvas(point: Point | null = null) {
-		Board.ctx.fillStyle = '#fff';
+		Board.ctx.fillStyle = Config.canvasColor;
 
 		if (point === null)
 			Board.ctx.fillRect(

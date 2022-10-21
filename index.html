@@ -95,11 +95,24 @@
       </label>
     </div>
     <div class="config_shapes">
-      <input class="input" type="color" id="color" value="#000000" />
-      <label class="label">
-        <input class="input" type="range" id="size" min="1" max="50" value="10" />
-        <input type="text" pattern="[0-9]{2}" class="input" value="10" />
-      </label>
+      <div class="actions">
+        <label>
+          lines color
+          <input class="input" type="color" id="stroke_color" value="#000000" />
+        </label>
+        <label>
+          fill color
+          <input class="input" type="color" id="fill_color" value="#000000" />
+        </label>
+        <label>
+          background
+          <input class="input" type="color" id="canvas_color" value="#eeeeee" />
+        </label>
+        <label class="label">
+          <input class="input" type="range" id="size" min="1" max="50" value="10" />
+          <input type="text" pattern="[0-9]{2}" class="input" value="10" />
+        </label>
+      </div>
     </div>
     <div class="actions">
       <button class="input button" id="clear">Clear</button>

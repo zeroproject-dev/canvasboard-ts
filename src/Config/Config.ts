@@ -2,7 +2,13 @@ import Board from '../Board';
 import { DrawableFactory, DrawableType } from '../Drawables/DrawableFactory';
 import Drawable from '../types/Drawable';
 
-const $colorStroke = document.getElementById('color') as HTMLInputElement;
+const $colorStroke = document.getElementById(
+	'stroke_color'
+) as HTMLInputElement;
+const $colorFill = document.getElementById('fill_color') as HTMLInputElement;
+const $colorBackground = document.getElementById(
+	'canvas_color'
+) as HTMLInputElement;
 const $lineWidth = document.getElementById('size') as HTMLInputElement;
 const $lineWidthNumber = $lineWidth.nextElementSibling as HTMLInputElement;
 const $drawablesUI = document.getElementById('drawables') as HTMLDivElement;
@@ -45,8 +51,9 @@ export const saveHistory = (): void => {
 
 const ConfigObject = {
 	strokeColor: '#000000',
-	lineWidth: 10,
 	fillColor: '#000000',
+	canvasColor: '#eeeeee',
+	lineWidth: 10,
 	fill: false,
 	currentDrawable: 'HandDrawing' as DrawableType,
 	offsetX: 0,
@@ -78,7 +85,13 @@ export const Config = new Proxy(ConfigObject, {
 				break;
 			case 'fillColor':
 				target.fillColor = value;
+				$colorFill.value = value;
 				Board.ctx.fillStyle = value;
+				break;
+			case 'canvasColor':
+				target.canvasColor = value;
+				$colorBackground.value = value;
+				Board.reDraw();
 				break;
 			case 'fill':
 				target.fill = value;
@@ -146,7 +159,14 @@ export const initializeConfig = () => {
 
 	$colorStroke.addEventListener('change', ({ target }: Event) => {
 		Config.strokeColor = (target as HTMLInputElement).value;
+	});
+
+	$colorFill.addEventListener('change', ({ target }: Event) => {
 		Config.fillColor = (target as HTMLInputElement).value;
+	});
+
+	$colorBackground.addEventListener('change', ({ target }: Event) => {
+		Config.canvasColor = (target as HTMLInputElement).value;
 	});
 
 	$fill.addEventListener('change', ({ target }: Event) => {
