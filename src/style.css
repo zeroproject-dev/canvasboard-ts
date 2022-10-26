@@ -20,50 +20,54 @@ body {
 
 .canvas {
 	width: 100vw;
-	height: 100vh;
+	min-height: 100vh;
 	touch-action: none;
 }
 
 .configbar {
-	background-color: #e2e2e2;
+	background-color: #1e1e1e;
+	color: whitesmoke;
 	position: absolute;
 	display: flex;
 	flex-direction: column;
 	top: 50%;
-	left: 0;
+	left: 10px;
 	transform: translate(0, -50%);
 	width: 100px;
-	border: 1px solid rgba(0, 0, 0, 0.3);
-	border-radius: 0 5px 5px 0px;
+	border: 1px solid #3e3e3e;
+	border-radius: 5px;
 	padding: 10px;
 	gap: 5px;
 }
 
-.configbar > * {
-	width: 100%;
-	min-height: 30px;
+input {
+	background-color: transparent;
+	outline: none;
+	border: none;
+	accent-color: whitesmoke;
+	color: whitesmoke;
 }
 
 .button {
-	background-color: #fff;
-	border: 1px solid rgba(0, 0, 0, 0.3);
-	border-radius: 5px;
+	background-color: #2e2e2e;
+	color: whitesmoke;
+	border: none;
+	border-radius: 10px;
 	padding: 5px;
 	cursor: pointer;
 	text-align: center;
 	text-decoration: none;
-	color: black;
 	display: block;
 	font-size: 1rem;
 	font-weight: normal;
 }
 
 .selected_draw {
-	background-color: #e2e2e2;
+	background-color: #4d4d4d;
 }
 
 .button:hover {
-	background-color: #e2e2e2;
+	background-color: #4d4d4d;
 }
 
 .input {
@@ -72,16 +76,14 @@ body {
 }
 
 .input[type='color'] {
-	width: 50px;
-	height: 20px;
+	width: 25px;
+	height: 25px;
 }
 
 .input[type='range'] + .input {
 	width: 18px;
 	padding: 0;
-	border: none;
 	text-align: center;
-	background-color: transparent;
 }
 
 .input[type='range'] + .input:focus {
@@ -94,9 +96,22 @@ body {
 	align-items: center;
 }
 
+.lbl_color {
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: center;
+	justify-content: flex-end;
+}
+
 #drawables {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
+	gap: 5px;
+}
+
+.actions {
+	display: flex;
+	flex-direction: column;
 	gap: 5px;
 }
 
@@ -112,14 +127,20 @@ body {
 	}
 
 	#drawables {
-		grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
 		grid-template-rows: repeat(2, 1fr);
 	}
 
 	.actions {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
+		grid-template-rows: repeat(2, 1fr);
 		gap: 5px;
+		max-width: 160px;
+	}
+
+	.range {
+		grid-row: 3;
+		grid-column: 1 / 3;
 	}
 
 	.lbl_color {
@@ -129,7 +150,8 @@ body {
 }
 
 .icon {
-	width: 100%;
-	height: 100%;
+	width: 20px;
+	height: 20px;
 	max-width: 24px;
+	fill: whitesmoke;
 }

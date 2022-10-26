@@ -157,7 +157,7 @@ export default class HandDrawing implements Drawable {
 				return true;
 			}
 			if (index === arr.length - 1) {
-				return false;
+				return true;
 			}
 
 			const prevItem = arr[index - 1];

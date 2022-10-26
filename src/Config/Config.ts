@@ -183,9 +183,18 @@ export const initializeConfig = () => {
 	(document.getElementById('reset') as HTMLButtonElement).addEventListener(
 		'click',
 		() => {
-			Config.offsetX = 0;
-			Config.offsetY = 0;
-			Config.scale = 1;
+			const config = {
+				strokeColor: '#f4f4f4',
+				fillColor: '#f4f4f4',
+				canvasColor: '#1e1e1e',
+				lineWidth: 10,
+				fill: false,
+				currentDrawable: 'HandDrawing' as DrawableType,
+				offsetX: 0,
+				offsetY: 0,
+				scale: 1,
+			};
+			Object.assign(Config, config);
 			Board.reDraw();
 		}
 	);
