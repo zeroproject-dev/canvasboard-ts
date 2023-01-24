@@ -32,7 +32,7 @@ export default class Board extends BoardEvents {
 		Board.clearCanvas();
 	}
 
-	initilizeEvents() {
+	initializeEvents() {
 		this.onResizeEvent(this.onResize.bind(this));
 
 		this.onMouseDownEvent(this.onMouseDown.bind(this));
@@ -77,6 +77,7 @@ export default class Board extends BoardEvents {
 			);
 
 			Board.ctx.beginPath();
+			Board.ctx.lineCap = 'round';
 			draw.reDraw();
 			Board.ctx.closePath();
 		});
