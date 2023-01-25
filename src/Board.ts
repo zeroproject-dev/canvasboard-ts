@@ -5,9 +5,15 @@ import Point from './types/Point';
 import { CanvasConfig } from './Config/CanvasConfig';
 import { DrawableFactory } from './Drawables/DrawableFactory';
 
+type erasedHistoryItem = {
+	index: number;
+	countHistory: number;
+};
+
 export default class Board extends BoardEvents {
 	public static canvas: HTMLCanvasElement;
 	public static ctx: CanvasRenderingContext2D;
+	public static isCursorMode = false;
 
 	isDrawing: boolean;
 	isDragging: boolean;
@@ -15,6 +21,7 @@ export default class Board extends BoardEvents {
 	timer: number = 0;
 	static isPerfectShape: boolean = false;
 	static history: Drawable[] = [];
+	static erasedHistory: Array<erasedHistoryItem> = [];
 	currentDraw: Drawable | null = null;
 
 	constructor() {
@@ -67,6 +74,7 @@ export default class Board extends BoardEvents {
 		Board.clearCanvas();
 
 		Board.history.forEach((draw: Drawable) => {
+			if (draw.isErased) return;
 			Board.ctx.strokeStyle = draw.properties.strokeColor as string;
 			Board.ctx.fillStyle = draw.properties.fillColor as string;
 			Board.ctx.lineWidth =
@@ -87,6 +95,21 @@ export default class Board extends BoardEvents {
 	}
 
 	startDraw(evt: TouchEvent | MouseEvent) {
+		if (Board.isCursorMode) {
+			let drawIndex = this.checkCursorOnShape(evt);
+			if (drawIndex !== -1) {
+				Board.history[drawIndex].isErased = true;
+				Board.erasedHistory.push({
+					index: drawIndex,
+					countHistory: Board.history.length,
+				});
+				Board.clearCanvas();
+				Board.reDraw();
+				saveHistory();
+			}
+			return;
+		}
+
 		if (this.isDrawing) {
 			Board.ctx.strokeStyle = Config.strokeColor as string;
 			Board.ctx.fillStyle = Config.fillColor as string;
@@ -98,6 +121,8 @@ export default class Board extends BoardEvents {
 	}
 
 	draw(evt: MouseEvent | TouchEvent) {
+		if (Board.isCursorMode) return;
+
 		if (this.isDrawing) {
 			clearTimeout(this.timer);
 			if (!Board.isPerfectShape)
@@ -110,6 +135,11 @@ export default class Board extends BoardEvents {
 	}
 
 	endDraw(evt: MouseEvent | TouchEvent) {
+		if (Board.isCursorMode) {
+			this.isDragging = false;
+			return;
+		}
+
 		if (this.isDrawing) {
 			this.currentDraw?.endDraw(evt);
 
@@ -127,7 +157,7 @@ export default class Board extends BoardEvents {
 
 	onMouseDown(evt: MouseEvent) {
 		evt.preventDefault();
-		this.isDrawing = evt.button == 0;
+		this.isDrawing = evt.button == 0 && !Board.isCursorMode;
 		this.isDragging = evt.button == 1;
 
 		CanvasConfig.cursorX = evt.pageX;
@@ -136,6 +166,19 @@ export default class Board extends BoardEvents {
 		CanvasConfig.prevCursorY = evt.pageY;
 
 		this.startDraw(evt);
+	}
+
+	checkCursorOnShape(evt: MouseEvent | TouchEvent) {
+		let index = -1;
+
+		for (let i = Board.history.length - 1; i >= 0; i--) {
+			if (Board.history[i].isCursorOnShape(evt)) {
+				index = i;
+				break;
+			}
+		}
+
+		return index;
 	}
 
 	onMouseMove(evt: MouseEvent) {
@@ -290,10 +333,24 @@ export default class Board extends BoardEvents {
 	}
 
 	static undo() {
-		if (Board.history.length === 0) return;
+		if (Board.history.length == 0) return;
 
 		Board.clearCanvas();
-		Board.history.pop();
+
+		if (Board.erasedHistory.length > 0) {
+			let lastIndex = Board.erasedHistory.length - 1;
+			if (
+				Board.erasedHistory[lastIndex].countHistory === Board.history.length
+			) {
+				Board.history[Board.erasedHistory[lastIndex].index].isErased = false;
+				Board.erasedHistory.pop();
+			} else {
+				Board.history.pop();
+			}
+		} else {
+			Board.history.pop();
+		}
+
 		saveHistory();
 		Board.reDraw();
 	}

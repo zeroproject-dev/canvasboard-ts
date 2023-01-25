@@ -8,6 +8,7 @@ import { DrawableType } from './DrawableFactory';
 export class Circle implements Drawable {
 	properties: DrawableProperties;
 	type: string = DrawableType.Circle;
+	isErased: boolean = false;
 
 	worldCenterX: number;
 	worldCenterY: number;
@@ -115,5 +116,26 @@ export class Circle implements Drawable {
 
 	isEmpty(): boolean {
 		return this.radiusX === 0 && this.radiusY === 0;
+	}
+
+	isCursorOnShape(event: MouseEvent | TouchEvent): boolean {
+		const x =
+			event instanceof MouseEvent ? event.pageX : event.touches[0].pageX;
+		const y =
+			event instanceof MouseEvent ? event.pageY : event.touches[0].pageY;
+
+		const worldX = CanvasConfig.toWorldX(x);
+		const worldY = CanvasConfig.toWorldY(y);
+
+		const distanceX = Math.abs(worldX - this.worldCenterX);
+		const distanceY = Math.abs(worldY - this.worldCenterY);
+
+		return (
+			distanceX <= this.radiusX &&
+			distanceY <= this.radiusY &&
+			Math.pow(distanceX / this.radiusX, 2) +
+				Math.pow(distanceY / this.radiusY, 2) <=
+				1
+		);
 	}
 }

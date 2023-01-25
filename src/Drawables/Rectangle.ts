@@ -8,6 +8,7 @@ import { DrawableType } from './DrawableFactory';
 export class Rectangle implements Drawable {
 	properties: DrawableProperties;
 	type: string = DrawableType.Rectangle;
+	isErased: boolean = false;
 
 	initialRealX: number;
 	initialRealY: number;
@@ -113,5 +114,21 @@ export class Rectangle implements Drawable {
 
 	isEmpty(): boolean {
 		return this.width === 0 && this.height === 0;
+	}
+
+	isCursorOnShape(evt: MouseEvent | TouchEvent): boolean {
+		const x = evt instanceof MouseEvent ? evt.pageX : evt.touches[0].pageX;
+		const y = evt instanceof MouseEvent ? evt.pageY : evt.touches[0].pageY;
+
+		const realX = CanvasConfig.toWorldX(x);
+		const realY = CanvasConfig.toWorldY(y);
+
+		const x1 = this.initialRealX;
+		const y1 = this.initialRealY;
+
+		const x2 = this.initialRealX + this.width;
+		const y2 = this.initialRealY + this.height;
+
+		return realX >= x1 && realX <= x2 && realY >= y1 && realY <= y2;
 	}
 }

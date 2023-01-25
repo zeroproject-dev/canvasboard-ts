@@ -40,22 +40,31 @@ const loadHistory = (): void => {
 
 			Board.history.push(drawable);
 		});
-
-		Board.reDraw();
 	}
+
+	const erasedHistory = localStorage.getItem('erasedHistory');
+
+	if (erasedHistory !== null) {
+		const erasedHistoryParse = JSON.parse(erasedHistory);
+		Board.erasedHistory = erasedHistoryParse;
+	}
+
+	Board.reDraw();
 };
 
 export const saveHistory = (): void => {
 	localStorage.setItem('history', JSON.stringify(Board.history));
+	localStorage.setItem('erasedHistory', JSON.stringify(Board.erasedHistory));
 };
 
 const ConfigObject = {
 	strokeColor: '#f4f4f4',
 	fillColor: '#f4f4f4',
 	canvasColor: '#1e1e1e',
-	lineWidth: 10,
+	isCursorMode: false,
 	fill: false,
 	currentDrawable: 'HandDrawing' as DrawableType,
+	lineWidth: 10,
 	offsetX: 0,
 	offsetY: 0,
 	scale: 1,
@@ -99,7 +108,10 @@ export const Config = new Proxy(ConfigObject, {
 				break;
 			case 'currentDrawable':
 				target.currentDrawable = value;
-				toggleSelectedDraw();
+				break;
+			case 'isCursorMode':
+				target.isCursorMode = value;
+				Board.isCursorMode = value;
 				break;
 		}
 		saveConfig();
@@ -128,10 +140,10 @@ const toggleSelectedDraw = (): void => {
 	$drawablesUI.childNodes.forEach((child) => {
 		if (child.nodeType === Node.ELEMENT_NODE) {
 			const target = child as HTMLElement;
-			target.classList.remove('selected_draw');
-			if (target.dataset.type === Config.currentDrawable) {
-				target.classList.add('selected_draw');
-			}
+			target.classList.toggle(
+				'selected_draw',
+				target.dataset.type === Config.currentDrawable
+			);
 		}
 	});
 };
@@ -220,13 +232,20 @@ export const initializeConfig = () => {
 			target = getAncestorByTagName(target, 'BUTTON') as HTMLButtonElement;
 		}
 		const drawable = target.dataset.type;
+
 		if (drawable === undefined) return;
 
+		let isCursor = drawable === 'Cursor';
+		Board.isCursorMode = isCursor;
+		Config.isCursorMode = isCursor;
+
 		Config.currentDrawable = drawable as DrawableType;
+		toggleSelectedDraw();
 	});
 
 	window.addEventListener('load', () => {
 		loadConfig();
 		loadHistory();
+		toggleSelectedDraw();
 	});
 };

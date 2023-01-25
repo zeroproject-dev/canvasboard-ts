@@ -1,5 +1,6 @@
 import Board from '../Board';
 import { CanvasConfig } from '../Config/CanvasConfig';
+import { Config } from '../Config/Config';
 import Drawable from '../types/Drawable';
 import { DrawableProperties } from '../types/DrawableProperties';
 import { DrawableType } from './DrawableFactory';
@@ -11,6 +12,7 @@ export default class HandDrawing implements Drawable {
 
 	properties: DrawableProperties;
 	type: string = DrawableType.HandDrawing;
+	isErased: boolean = false;
 
 	constructor(properties: DrawableProperties) {
 		this.line = [];
@@ -167,5 +169,52 @@ export default class HandDrawing implements Drawable {
 
 		normalizedArray.push([arr[arr.length - 1][0], arr[arr.length - 1][1]]);
 		return normalizedArray;
+	}
+
+	isCursorOnShape(event: MouseEvent | TouchEvent): boolean {
+		const x =
+			event instanceof MouseEvent ? event.pageX : event.touches[0].pageX;
+		const y =
+			event instanceof MouseEvent ? event.pageY : event.touches[0].pageY;
+
+		const realX = CanvasConfig.toWorldX(x);
+		const realY = CanvasConfig.toWorldY(y);
+
+		const line = this.line;
+
+		for (let i = 0; i < line.length - 1; i++) {
+			const point1 = line[i];
+			const point2 = line[i + 1];
+
+			if (this.isPointOnLine(point1, point2, [realX, realY])) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	isPointOnLine(
+		point1: Array<number>,
+		point2: Array<number>,
+		point: Array<number>
+	): boolean {
+		const x1 = point1[0];
+		const y1 = point1[1];
+		const x2 = point2[0];
+		const y2 = point2[1];
+		const x = point[0];
+		const y = point[1];
+
+		const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+		const distance1 = Math.sqrt((x - x1) ** 2 + (y - y1) ** 2);
+		const distance2 = Math.sqrt((x2 - x) ** 2 + (y2 - y) ** 2);
+
+		let lineWidth = this.properties.lineWidth as number;
+
+		return (
+			distance1 + distance2 >= distance - (lineWidth / 3) * Config.scale &&
+			distance1 + distance2 <= distance + (lineWidth / 3) * Config.scale
+		);
 	}
 }

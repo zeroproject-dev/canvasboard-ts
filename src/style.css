@@ -132,6 +132,10 @@ input {
 		grid-template-rows: repeat(2, 1fr);
 	}
 
+	.button:hover {
+		background-color: #2e2e2e;
+	}
+
 	.actions {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
@@ -156,4 +160,12 @@ input {
 	height: 20px;
 	max-width: 24px;
 	fill: whitesmoke;
+}
+
+.icon-stroke {
+	width: 20px;
+	height: 20px;
+	max-width: 24px;
+	stroke: whitesmoke;
+	stroke-width: 1.91px;
 }
