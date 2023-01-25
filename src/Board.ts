@@ -98,10 +98,12 @@ export default class Board extends BoardEvents {
 		if (Board.isCursorMode) {
 			if (evt instanceof MouseEvent) {
 				if (evt.button !== 0) return;
+			} else {
+				if (evt.touches.length !== 1) return;
 			}
 
 			let drawIndex = this.checkCursorOnShape(evt);
-			if (drawIndex !== -1) {
+			if (drawIndex !== -1 && !Board.history[drawIndex].isErased) {
 				Board.history[drawIndex].isErased = true;
 				Board.erasedHistory.push({
 					index: drawIndex,
@@ -242,7 +244,7 @@ export default class Board extends BoardEvents {
 	}
 
 	onTouchStart(evt: TouchEvent) {
-		this.isDrawing = evt.touches.length == 1;
+		this.isDrawing = evt.touches.length == 1 && !Board.isCursorMode;
 		this.isDragging = evt.touches.length >= 2;
 
 		CanvasConfig.prevTouches[0] = evt.touches[0];
