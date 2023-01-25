@@ -96,6 +96,10 @@ export default class Board extends BoardEvents {
 
 	startDraw(evt: TouchEvent | MouseEvent) {
 		if (Board.isCursorMode) {
+			if (evt instanceof MouseEvent) {
+				if (evt.button !== 0) return;
+			}
+
 			let drawIndex = this.checkCursorOnShape(evt);
 			if (drawIndex !== -1) {
 				Board.history[drawIndex].isErased = true;
