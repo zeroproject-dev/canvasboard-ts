@@ -17,4 +17,5 @@ CMD ["nginx", "-g", "daemon off;"]
 # artifact stage for deployment
 
 FROM scratch AS artifact
-COPY --from=build /app/dist /board
+ARG APP_NAME=board
+COPY --from=build /app/dist /${APP_NAME}
