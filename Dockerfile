@@ -1,4 +1,4 @@
-FROM node:19-alpine3.16 as build
+FROM node:19-alpine3.16 AS build
 ARG VITE_BASE_URL=./
 WORKDIR /app
 COPY package.json .
