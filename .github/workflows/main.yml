@@ -14,8 +14,8 @@ jobs:
       - name: deploy page
         uses: fifsky/ssh-action@master
         with:
-          args: '-tt'
+          args: "-tt"
           host: ${{ secrets.HOST }}
           user: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
-          command: ~/deploy.sh canvasboard-ts
+          command: ~/front-project-deploy.sh canvasboard-ts
