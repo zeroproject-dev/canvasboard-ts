@@ -3,7 +3,7 @@
 Simple board for draw in a browser :).
 
 <p align="center" >
-  <img src="https://github.com/zeroproject-0/canvasboard-ts/blob/main/docs/images/screenshot.png" alt="board" />
+  <img src="https://github.com/zeroproject-dev/canvasboard-ts/blob/main/docs/images/screenshot.png" alt="board" />
 </p>
 
 ## Index
@@ -35,7 +35,7 @@ And then go to the following link: [http://localhost:8080](http://localhost:8080
 
 ### With Link
 
-If you want to use the board, just go to the following link [Board](https://projects.zeroproject.dev/canvasboard-ts)
+If you want to use the board, just go to the following link [Board](https://projects.zeroproject.dev/board)
 
 ### Shortcuts
 
@@ -59,7 +59,7 @@ If you want to use the board, just go to the following link [Board](https://proj
 ### Tool bar
 
 <p align="center" >
-  <img src="https://github.com/zeroproject-0/canvasboard-ts/blob/main/docs/images/config.png" alt="tools" />
+  <img src="https://github.com/zeroproject-dev/canvasboard-ts/blob/main/docs/images/config.png" alt="tools" />
 </p>
 
 | Tool            | Description                                                                            |

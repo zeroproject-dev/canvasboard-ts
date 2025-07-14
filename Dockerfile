@@ -17,4 +17,4 @@ CMD ["nginx", "-g", "daemon off;"]
 # artifact stage for deployment
 
 FROM scratch AS artifact
-COPY --from=build /app/dist /canvasboard-ts
+COPY --from=build /app/dist /board
